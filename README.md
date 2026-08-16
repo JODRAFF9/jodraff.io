@@ -3,6 +3,7 @@
 Une plateforme qui **génère l'ERP complet d'une boutique à partir de deux
 informations** : le type de commerce et son nom.
 
+
 L'utilisateur arrive sur un écran d'accueil, choisit « Supermarché », « Pharmacie »,
 « Quincaillerie »… saisit le nom de son enseigne, et obtient immédiatement un
 tableau de bord de gestion à la manière d'Odoo : ventes, stock, achats, clients,
