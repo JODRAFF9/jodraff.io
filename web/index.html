@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ERP Boutique — tableau de bord</title>
+  <meta name="description" content="Plateforme de gestion de boutique : ventes, stock, achats, clients, ressources humaines et finance sur une base de données unique.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏪</text></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Écran de démarrage : type de boutique + nom -->
+  <main id="onboarding" class="onboard-page" hidden>
+    <section class="onboard">
+      <div class="onboard-logo">🏪</div>
+      <h1>Créez le tableau de bord de votre boutique</h1>
+      <p class="lead">
+        Indiquez le type de commerce que vous exploitez et son nom. La plateforme
+        génère un ERP complet — ventes, stock, achats, clients, ressources humaines
+        et finance — dans une base SQL unique, avec un historique d'activité déjà
+        consolidé.
+      </p>
+
+      <h2 class="step-label"><span class="step-num">1</span> Quel type de boutique ?</h2>
+      <div id="type-grid" class="type-grid" role="radiogroup" aria-label="Type de boutique"></div>
+
+      <h2 class="step-label" style="margin-top:26px"><span class="step-num">2</span> Comment s'appelle-t-elle ?</h2>
+      <form id="onboard-form" class="grid grid-3" autocomplete="off">
+        <div class="field">
+          <label for="f-name">Nom de la boutique</label>
+          <input id="f-name" name="name" type="text" placeholder="Ex. : Chez Aminata" required>
+        </div>
+        <div class="field">
+          <label for="f-city">Ville</label>
+          <input id="f-city" name="city" type="text" value="Abidjan">
+        </div>
+        <div class="field">
+          <label for="f-country">Pays</label>
+          <input id="f-country" name="country" type="text" value="Côte d'Ivoire">
+        </div>
+      </form>
+
+      <details class="advanced">
+        <summary>Options avancées</summary>
+        <div class="grid grid-3">
+          <div class="field">
+            <label for="f-currency">Devise</label>
+            <select id="f-currency"></select>
+          </div>
+          <div class="field">
+            <label for="f-months">Profondeur d'historique</label>
+            <select id="f-months">
+              <option value="6">6 mois</option>
+              <option value="12" selected>12 mois</option>
+              <option value="24">24 mois</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-traffic">Intensité d'activité</label>
+            <select id="f-traffic">
+              <option value="0.4">Petit commerce (×0,4)</option>
+              <option value="1" selected>Activité normale (×1)</option>
+              <option value="2">Forte affluence (×2)</option>
+            </select>
+          </div>
+        </div>
+      </details>
+
+      <div id="onboard-notice" class="notice notice-info">
+        <span>ℹ️</span>
+        <div>
+          <b>Les six départements sont livrés d'office.</b>
+          Ils partagent une seule base de données : une vente décharge le stock,
+          met à jour la fiche client et le compte de résultat au même instant.
+        </div>
+      </div>
+
+      <div class="onboard-actions">
+        <button id="btn-create" class="btn" type="button">Créer mon tableau de bord</button>
+        <span id="onboard-echo" class="muted"></span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Application -->
+  <div id="app" class="shell" hidden>
+    <aside class="sidebar">
+      <div class="brand">
+        <span id="brand-logo" class="brand-logo">🏪</span>
+        <div>
+          <div id="brand-name" class="brand-name">—</div>
+          <div id="brand-type" class="brand-type">—</div>
+        </div>
+      </div>
+      <div class="nav-label">Départements</div>
+      <nav id="nav" aria-label="Départements"></nav>
+      <div class="sidebar-foot">
+        <div>Base SQL centrale</div>
+        <div id="brand-meta"></div>
+        <button id="btn-reset" class="btn btn-danger" type="button">Réinitialiser la plateforme</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <span class="muted">Période analysée</span>
+        <div id="period" class="seg" role="group" aria-label="Période analysée">
+          <button type="button" data-days="7">7 jours</button>
+          <button type="button" data-days="30" class="on">30 jours</button>
+          <button type="button" data-days="90">90 jours</button>
+          <button type="button" data-days="365">12 mois</button>
+        </div>
+      </div>
+      <div id="view" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <div id="overlay-text">Génération de l'ERP…</div>
+      <div class="progress"><div id="overlay-bar" class="progress-bar"></div></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="js/format.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

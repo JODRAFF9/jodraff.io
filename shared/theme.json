@@ -1,0 +1,74 @@
+{
+  "name": "ERP Boutique — système visuel",
+  "note": "Jetons de design partagés par le dashboard R Shiny, le dashboard Python/Dash, le front web et l'application Angular. Palette catégorielle validée (bande de clarté, plancher de chroma, séparation daltonisme ΔE ≥ 8 sur paires adjacentes, plancher vision normale ΔE ≥ 15). Les couleurs sont assignées dans un ORDRE FIXE, jamais recyclé : une série garde sa couleur même si un filtre change le nombre de séries.",
+  "categorical": {
+    "light": ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"],
+    "dark":  ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
+    "max_series": 8,
+    "max_series_all_pairs": 3
+  },
+  "sequential": {
+    "hue": "blue",
+    "light": ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"],
+    "ordinal_min_light": "#86b6ef",
+    "ordinal_max_dark": "#184f95"
+  },
+  "diverging": {
+    "negative": "#d03b3b",
+    "midpoint_light": "#f0efec",
+    "midpoint_dark": "#383835",
+    "positive": "#2a78d6"
+  },
+  "status": {
+    "good": "#0ca30c",
+    "warning": "#fab219",
+    "serious": "#ec835a",
+    "critical": "#d03b3b",
+    "note": "Réservé aux états (rupture, alerte, OK). Jamais réutilisé comme couleur de série, et toujours accompagné d'une icône + d'un libellé — la couleur ne porte jamais l'information seule."
+  },
+  "surface": {
+    "light": {
+      "chart": "#fcfcfb",
+      "page": "#f9f9f7",
+      "card": "#ffffff",
+      "ink_primary": "#0b0b0b",
+      "ink_secondary": "#52514e",
+      "ink_muted": "#898781",
+      "grid": "#e1e0d9",
+      "axis": "#c3c2b7",
+      "border": "rgba(11,11,11,0.10)",
+      "delta_good": "#006300"
+    },
+    "dark": {
+      "chart": "#1a1a19",
+      "page": "#0d0d0d",
+      "card": "#1f1f1e",
+      "ink_primary": "#ffffff",
+      "ink_secondary": "#c3c2b7",
+      "ink_muted": "#898781",
+      "grid": "#2c2c2a",
+      "axis": "#383835",
+      "border": "rgba(255,255,255,0.10)",
+      "delta_good": "#0ca30c"
+    }
+  },
+  "stock_status": {
+    "rupture": "critical",
+    "alerte": "serious",
+    "faible": "warning",
+    "ok": "good"
+  },
+  "typography": {
+    "font_family": "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    "tabular_nums_for": "colonnes de tableaux et graduations d'axes uniquement"
+  },
+  "departments": {
+    "OVERVIEW": "#4a3aa7",
+    "SALES": "#2a78d6",
+    "STOCK": "#eb6834",
+    "PURCH": "#1baf7a",
+    "CRM": "#e87ba4",
+    "HR": "#eda100",
+    "FIN": "#008300"
+  }
+}

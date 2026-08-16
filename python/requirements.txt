@@ -1,0 +1,19 @@
+# Plateforme ERP Boutique — dépendances Python
+#
+#   pip install -r requirements.txt
+#
+# La base de données est SQLite : elle fait partie de la bibliothèque standard,
+# aucun serveur à installer.
+
+# --- Dashboard (Plotly Dash) -------------------------------------------
+dash>=3.0,<5.0
+plotly>=6.0
+pandas>=2.0
+
+# --- API REST (front web + Angular) ------------------------------------
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.6
+
+# --- Optionnel : mise en production du dashboard ------------------------
+# gunicorn>=21.2

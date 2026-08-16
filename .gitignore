@@ -1,0 +1,27 @@
+# Base de données générée
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+out-tsc/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Système
+.DS_Store
+*.log
