@@ -53,6 +53,122 @@ directement. Tous voient donc toujours **exactement les mêmes chiffres**.
 
 ---
 
+## Le pipeline, de bout en bout
+
+Chaque étage a **un seul objectif**, et ne connaît que le contrat de l'étage
+précédent. C'est ce découpage qui permet d'avoir quatre interfaces sans
+dupliquer une seule règle de gestion.
+
+```
+    ┌──────────────────────────────────────────────────────────────────┐
+    │  ENTRÉE UTILISATEUR                                              │
+    │  « Supermarché »  +  « Chez Aminata »          ← tout part de là │
+    └───────────────────────────┬──────────────────────────────────────┘
+                                │
+    ①  ONBOARDING ──────────────┴─── objectif : ne demander que l'essentiel
+    │   Deux questions, pas un formulaire de paramétrage. Le reste a des
+    │   valeurs par défaut (devise, ville, profondeur d'historique).
+    │      shiny/R/mod_onboarding.R      python/dash_app/onboarding.py
+    │      web/index.html                angular/…/onboarding.component.ts
+    │
+    ▼
+    ②  CATALOGUE MÉTIER ────────────── objectif : décrire un commerce, pas coder
+    │   Rayons, produits, prix, fournisseurs, métiers, saisonnalité, structure
+    │   de coûts. Ajouter un métier = ajouter une entrée JSON.
+    │      shared/store_types.json
+    │
+    ▼
+    ③  GÉNÉRATEUR ──────────────────── objectif : rendre la simulation crédible
+    │   Déroule le temps dans l'ordre : stock d'ouverture → ventes jour après
+    │   jour → réappro sur le mois écoulé → pertes → charges et paie.
+    │   L'acheteur ne connaît que le passé : d'où des ruptures et des surstocks
+    │   à piloter, au lieu d'une base parfaite et sans intérêt.
+    │      python/erp/generator.py       shiny/R/generator.R
+    │
+    ▼
+    ④  BASE SQL CENTRALE ───────────── objectif : une seule vérité partagée
+    │   16 tables. Les départements n'ont pas « leurs » données : ils écrivent
+    │   tous dans les mêmes.
+    │      shared/schema.sql  →  data/erp.db
+    │
+    ├─ ⑤ TRIGGERS ─────────────────── objectif : propager sans code applicatif
+    │      vente      → sortie de stock + TVA + coût des marchandises
+    │      encaissement → points de fidélité du client
+    │      réception  → entrée en stock + coût de revient lissé + audit
+    │      inventaire → ajustement du niveau
+    │
+    ├─ ⑥ VUES ─────────────────────── objectif : calculer une fois pour toutes
+    │      v_products · v_sales_daily · v_sales_monthly · v_stock_alerts
+    │      v_customer_value · v_employee_performance · v_financial_monthly
+    │      v_product_performance · v_department_dashboard
+    │
+    ▼
+    ⑦  COUCHE DE LECTURE ───────────── objectif : traduire les vues, rien de plus
+    │      python/erp/queries.py        shiny/R/queries.R
+    │   Aucune règle de gestion ici : que des SELECT sur les vues ci-dessus.
+    │
+    ├──────────────┬───────────────────┬──────────────────────────┐
+    ▼              ▼                   ▼                          ▼
+  ⑧ DASHBOARD    ⑧ DASHBOARD        ⑨ API REST ──────┬──────► ⑩ FRONT WEB
+    R SHINY        PYTHON DASH         FastAPI       │           HTML/CSS/JS
+    (DBI direct)   (sqlite3 direct)    ~30 routes    └──────► ⑩ ANGULAR 21
+                                                                 TypeScript
+    objectif : montrer.  Aucune de ces interfaces ne calcule un indicateur.
+```
+
+**Le contrat, en une phrase par étage.** ① ne demande que deux informations.
+② décrit le métier en JSON. ③ déroule le temps. ④ stocke. ⑤ propage.
+⑥ consolide. ⑦ traduit. ⑧⑨⑩ affichent.
+
+Si un chiffre est faux, il n'y a qu'un seul endroit à corriger — et les quatre
+interfaces sont corrigées ensemble.
+
+---
+
+## Objectif de chaque dossier
+
+| Dossier | Objectif général |
+|---|---|
+| `shared/` | **Le contrat commun.** Ce que les quatre interfaces doivent partager pour ne jamais diverger : le modèle SQL, le catalogue des métiers, les jetons de design. |
+| `python/erp/` | **Le noyau métier.** Créer une entreprise, lire la base, formater. Consommé par le dashboard Dash, l'API et la ligne de commande — écrit une fois. |
+| `python/dash_app/` | **Le tableau de bord Python.** Sept pages, une par département, pour l'analyste qui travaille déjà en Python. |
+| `python/api/` | **La porte d'entrée des clients web.** Exposer la base en REST pour que les fronts n'aient pas besoin d'un accès direct. |
+| `python/cli.py` | **L'usage sans écran.** Préparer une base, consulter les indicateurs, réinitialiser — utile en démonstration comme en intégration continue. |
+| `shiny/` | **Le tableau de bord R.** Même produit, idiome R : pour l'utilisateur qui vit dans RStudio. |
+| `web/` | **La preuve par la simplicité.** Un ERP consultable sans build, sans dépendance et sans réseau. Les graphiques SVG y sont écrits à la main. |
+| `angular/` | **La version applicative.** Typage strict, chargement paresseux par département : la forme qu'aurait le produit dans une équipe front. |
+| `tests/` | **Le filet.** Vérifier que les triggers propagent, que les sept métiers restent cohérents, et que R et Python lisent les mêmes chiffres. |
+| `scripts/` | **Une commande pour tout.** `./scripts/run-tests.sh` exécute le pipeline entier ; `--install` pose d'abord les dépendances. |
+| `.github/workflows/` | **Le même pipeline, à chaque poussée.** Installe les paquets Python, R et Node, puis rejoue les tests. |
+| `docs/` | **Le pourquoi.** Architecture, choix techniques, guide de démarrage et dépannage. |
+
+---
+
+## Tester le pipeline
+
+```bash
+./scripts/run-tests.sh              # tout ce qui est disponible sur la machine
+./scripts/run-tests.sh --install    # installe d'abord Python, R et Node
+```
+
+Ce que la suite vérifie :
+
+| Étage | Contrôles |
+|---|---|
+| Ressources partagées | JSON valides, schéma applicable, 5 triggers et 9 vues présents |
+| Triggers | vente → stock, commande non reçue → stock intact, réception → stock + audit, inventaire, fidélité |
+| Générateur | les 7 métiers, `stock = somme des mouvements`, `sous-total = somme des lignes`, stock final positif, aucune écriture datée dans le futur, conversion de devise |
+| Requêtes | les ~30 fonctions métier répondent, résultat = marge − charges − paie |
+| API REST | 409 sans boutique, création, les 13 routes de lecture, écritures, erreurs 404 et 422 |
+| Pile R | chargement du dossier `R/` sans `global.R`, générateur, modules d'interface, graphiques |
+| **Parité R / Python** | sur **la même base**, les deux piles doivent renvoyer les mêmes CA, marge, panier, stock et résultat |
+| Fronts web | syntaxe JavaScript, compilation Angular en TypeScript strict |
+
+La parité est le test le plus sévère : si les deux piles divergent d'un centime,
+c'est qu'une des deux a réimplémenté une règle au lieu de lire la vue SQL.
+
+---
+
 ## Démarrage rapide
 
 ### 1. La plateforme Python (dashboard complet, le plus rapide)

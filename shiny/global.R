@@ -1,9 +1,42 @@
 # =====================================================================
 #  ERP Boutique — dashboard R Shiny
-#  Chargement des bibliothèques, des ressources partagées et des modules.
+#  Amorçage : dépendances, puis chargement des modules.
 #
-#  Ce fichier est exécuté une seule fois au démarrage de l'application.
+#  Les ressources partagées (catalogue des métiers, jetons de design,
+#  chemins) vivent dans R/aaa_shared.R, qui ne dépend de rien et se charge
+#  toujours en premier — que ce soit Shiny qui charge le dossier R/
+#  automatiquement (depuis Shiny 1.5) ou la boucle ci-dessous.
 # =====================================================================
+
+# --- 1. Dépendances ---------------------------------------------------
+# Les paquets manquants sont installés automatiquement : lancer
+# `shiny::runApp()` sur une machine neuve suffit. Pour désactiver ce
+# comportement (serveur de production, image figée), définir
+# ERP_AUTO_INSTALL=0 dans l'environnement.
+ERP_PACKAGES <- c("shiny", "bslib", "DBI", "RSQLite", "jsonlite", "plotly", "DT")
+
+local({
+  missing <- ERP_PACKAGES[!vapply(ERP_PACKAGES, requireNamespace, TRUE, quietly = TRUE)]
+  if (length(missing) == 0) return(invisible(NULL))
+
+  if (identical(Sys.getenv("ERP_AUTO_INSTALL", "1"), "0")) {
+    stop("Paquets R manquants : ", paste(missing, collapse = ", "),
+         "\nInstallez-les avec : Rscript shiny/install.R", call. = FALSE)
+  }
+
+  message("Installation des paquets manquants : ", paste(missing, collapse = ", "))
+  repos <- getOption("repos")
+  if (is.null(repos[["CRAN"]]) || repos[["CRAN"]] == "@CRAN@") {
+    repos["CRAN"] <- "https://cloud.r-project.org"
+  }
+  install.packages(missing, repos = repos, quiet = TRUE)
+
+  still_missing <- missing[!vapply(missing, requireNamespace, TRUE, quietly = TRUE)]
+  if (length(still_missing)) {
+    stop("Installation impossible pour : ", paste(still_missing, collapse = ", "),
+         "\nInstallez-les manuellement : Rscript shiny/install.R", call. = FALSE)
+  }
+})
 
 suppressPackageStartupMessages({
   library(shiny)
@@ -17,44 +50,23 @@ suppressPackageStartupMessages({
 
 options(stringsAsFactors = FALSE, scipen = 999)
 
-# Repli si `NULL` (base R >= 4.4 le fournit, on le redéfinit pour les versions
-# antérieures ; il est utilisé dès les lignes suivantes).
-`%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
-
-# --- Localisation des ressources partagées ---------------------------
-# Shiny place le répertoire de travail sur le dossier de l'application.
-APP_DIR <- getwd()
-if (!dir.exists(file.path(APP_DIR, "R")) && dir.exists("shiny/R")) {
-  APP_DIR <- normalizePath("shiny")
-}
-PROJECT_DIR <- normalizePath(file.path(APP_DIR, ".."), mustWork = FALSE)
-SHARED_DIR  <- Sys.getenv("ERP_SHARED_DIR", file.path(PROJECT_DIR, "shared"))
-DB_PATH     <- Sys.getenv("ERP_DB_PATH", file.path(PROJECT_DIR, "data", "erp.db"))
-
-if (!dir.exists(SHARED_DIR)) {
-  stop("Dossier partagé introuvable : ", SHARED_DIR,
-       "\nDéfinissez ERP_SHARED_DIR vers le dossier 'shared/' du projet.")
-}
-
-# --- Catalogue des métiers et jetons de design (mêmes fichiers que Python)
-CATALOG <- jsonlite::fromJSON(file.path(SHARED_DIR, "store_types.json"),
-                              simplifyDataFrame = FALSE)
-THEME   <- jsonlite::fromJSON(file.path(SHARED_DIR, "theme.json"),
-                              simplifyDataFrame = FALSE)
-SCHEMA_PATH <- file.path(SHARED_DIR, "schema.sql")
-
-# --- Départements : l'axe de centralisation des données ---------------
-DEPARTMENTS <- list(
-  list(code = "OVERVIEW", route = "overview",   icon = "\U0001F4CA", name = "Vue d'ensemble"),
-  list(code = "SALES",    route = "sales",      icon = "\U0001F9FE", name = "Ventes"),
-  list(code = "STOCK",    route = "stock",      icon = "\U0001F4E6", name = "Stock"),
-  list(code = "PURCH",    route = "purchasing", icon = "\U0001F69A", name = "Achats"),
-  list(code = "CRM",      route = "crm",        icon = "\U0001F465", name = "Clients"),
-  list(code = "HR",       route = "hr",         icon = "\U0001F9D1", name = "Ressources humaines"),
-  list(code = "FIN",      route = "finance",    icon = "\U0001F4B0", name = "Finance")
-)
-
-# --- Sources des modules ---------------------------------------------
-for (file in list.files(file.path(APP_DIR, "R"), pattern = "[.]R$", full.names = TRUE)) {
-  source(file, local = FALSE, encoding = "UTF-8")
-}
+# --- 2. Modules -------------------------------------------------------
+# Les fichiers du dossier R/ sont chargés dans l'ordre alphabétique
+# (aaa_shared.R en premier, car theme.R a besoin de THEME dès son
+# évaluation). Si Shiny les a déjà chargés, les sourcer à nouveau ne fait
+# que redéfinir des objets identiques.
+local({
+  app_dir <- getwd()
+  if (!dir.exists(file.path(app_dir, "R")) && dir.exists(file.path(app_dir, "shiny", "R"))) {
+    app_dir <- file.path(app_dir, "shiny")
+  }
+  files <- sort(list.files(file.path(app_dir, "R"), pattern = "[.][Rr]$", full.names = TRUE))
+  if (length(files) == 0) {
+    stop("Aucun fichier trouvé dans le dossier R/ de l'application.\n",
+         "Lancez l'application depuis le dossier 'shiny/' du projet : ",
+         "setwd('.../jodraff/shiny') puis shiny::runApp()", call. = FALSE)
+  }
+  for (file in files) {
+    source(file, local = globalenv(), encoding = "UTF-8")
+  }
+})

@@ -50,6 +50,10 @@ Six devises : XOF, XAF, MAD, EUR, USD, CAD.
 
 ### Vérifications
 
+Le pipeline complet est rejouable : `./scripts/run-tests.sh` (24 tests Python,
+103 tests R dont 11 de parité R/Python, syntaxe du front web, compilation
+Angular), et `.github/workflows/ci.yml` le rejoue à chaque poussée.
+
 - Génération testée sur les **7 métiers** et 3 devises.
 - Intégrité SQL contrôlée (`integrity_check`, `foreign_key_check`), cohérence
   **stock = somme des mouvements** et **sous-total de vente = somme des lignes**
@@ -62,13 +66,7 @@ Six devises : XOF, XAF, MAD, EUR, USD, CAD.
 
 ### Limites connues
 
-- **Le code R Shiny n'a pas été exécuté** : R n'était pas installé dans
-  l'environnement de développement. Sa logique reproduit celle du générateur
-  Python, qui est testé, et ses requêtes s'appuient sur les mêmes vues SQL — mais
-  un premier lancement mérite d'être surveillé (`shiny/install.R` pose les
-  dépendances).
-- **Angular est en version 21** et non 22 : la 22 exige Node ≥ 22.22.3, contre
-  22.22.2 disponible lors du développement.
+- **Angular est en version 21** et non 22 : la 22 exige Node ≥ 22.22.3.
 - **Pas d'authentification** : la plateforme génère des tableaux de bord, ce n'est
   pas un logiciel de caisse en production.
 - **SQLite** supporte plusieurs lecteurs et un écrivain (mode WAL). Pour un

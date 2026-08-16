@@ -193,6 +193,52 @@ Règles appliquées dans les quatre interfaces :
   droits par département serait le prochain chantier.
 - **Données synthétiques.** Les prix des catalogues sont plausibles mais indicatifs ;
   ils servent à démontrer la mécanique, pas à faire référence sur un marché.
-- **Le générateur R n'a pas été exécuté** dans l'environnement de développement
-  (R n'y est pas installé). Sa logique reproduit celle du générateur Python, qui est
-  testé, mais un premier lancement mérite d'être surveillé.
+- **Écart de version Angular.** Le projet est calé sur Angular 21 : la 22 exige
+  Node ≥ 22.22.3, absent de l'environnement de développement.
+- **Le CLI Angular ne rend pas toujours la main** après un build réussi. Le script
+  de test le contourne en surveillant son journal, mais c'est un contournement.
+
+
+---
+
+## Comment on vérifie tout cela
+
+`./scripts/run-tests.sh` rejoue le pipeline entier ; `.github/workflows/ci.yml`
+fait la même chose à chaque poussée, en installant au préalable les paquets
+Python, R et Node.
+
+| Suite | Fichier | Ce qu'elle protège |
+|---|---|---|
+| Pipeline Python | `tests/test_pipeline.py` | schéma, triggers, générateur sur les 7 métiers, requêtes, API REST |
+| Dashboard R | `tests/test_shiny.R` | chargement du dossier `R/`, générateur, modules d'interface, graphiques |
+| Parité | `tests/parity_reference.py` + `tests/test_shiny.R` | **R et Python doivent lire les mêmes chiffres sur la même base** |
+
+Les invariants vérifiés sur chaque base générée :
+
+```
+products.stock        ==  SUM(stock_moves.quantity)      par produit
+sales.subtotal        ==  SUM(sale_items.line_total)     par vente
+sales.total           ==  subtotal × (1 + taux de TVA)
+net_result            ==  marge brute − charges − paie   par mois
+SUM(stock × coût)     >   0                              stock global positif
+MAX(sale_date)        <=  aujourd'hui                    pas d'écriture future
+PRAGMA foreign_key_check et integrity_check              base saine
+```
+
+Le test de parité est le plus sévère du lot. Il crée une base avec la pile
+Python, relève ses indicateurs, puis demande à la pile R de lire **le même
+fichier** : chiffre d'affaires, marge, panier moyen, valeur de stock, effectif
+et résultat doivent coïncider au centime. Une divergence signifierait qu'une des
+deux piles a réimplémenté une règle au lieu de lire la vue SQL — exactement ce
+que l'architecture cherche à empêcher.
+
+Deux bugs ont été trouvés par cette démarche, tous deux côté R :
+
+1. `theme.R` lisait `THEME` à l'évaluation du fichier, alors que Shiny charge le
+   dossier `R/` avant `global.R` — d'où « objet 'THEME' introuvable » au premier
+   lancement. Corrigé en déplaçant les ressources dans `R/aaa_shared.R`, qui ne
+   dépend de rien et se charge en premier.
+2. La boucle de réapprovisionnement retranchait la consommation du mois **avant**
+   de passer commande, ce qui sous-commandait d'un mois entier et laissait un
+   stock global négatif. Corrigé en rétablissant la chronologie du générateur
+   Python. Le test `stock final positif` verrouille la régression.

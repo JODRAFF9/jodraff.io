@@ -7,8 +7,6 @@
 #  chaque interface se contente de lire et d'écrire dedans.
 # =====================================================================
 
-`%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
-
 #' Ouvre (et prépare) la connexion à la base centrale.
 db_connect <- function(path = DB_PATH) {
   dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)

@@ -1,0 +1,144 @@
+# =====================================================================
+#  Pipeline d'intégration continue.
+#
+#  Objectif : installer les dépendances des quatre piles, puis vérifier
+#  que la chaîne complète tient — schéma SQL, générateur, requêtes, API,
+#  dashboard R et fronts web — à chaque poussée.
+#
+#  Les trois travaux sont indépendants : un échec côté Angular n'empêche
+#  pas de voir le résultat des tests Python ou R.
+# =====================================================================
+name: Pipeline
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # -------------------------------------------------------------------
+  # Noyau Python : schéma SQL, générateur, requêtes métier, API REST
+  # -------------------------------------------------------------------
+  python:
+    name: Pile Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: python/requirements.txt
+
+      - name: Installer les paquets
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r python/requirements.txt
+          python -m pip install httpx          # client du TestClient FastAPI
+
+      - name: Vérifier les ressources partagées
+        run: |
+          python -c "import json; json.load(open('shared/store_types.json', encoding='utf-8'))"
+          python -c "import json; json.load(open('shared/theme.json', encoding='utf-8'))"
+          python -c "
+          import sqlite3
+          con = sqlite3.connect(':memory:')
+          con.executescript(open('shared/schema.sql', encoding='utf-8').read())
+          kinds = dict(con.execute('SELECT type, COUNT(*) FROM sqlite_master GROUP BY type').fetchall())
+          assert kinds.get('trigger') == 5, kinds
+          assert kinds.get('view') == 9, kinds
+          print('schéma SQL :', kinds)
+          "
+
+      - name: Tests du pipeline
+        run: python tests/test_pipeline.py
+
+      - name: Compilation de tous les modules
+        run: python -m compileall -q python
+
+      - name: Produire la base de parité
+        run: python tests/parity_reference.py "${{ runner.temp }}/parite.db"
+
+      - name: Conserver la base de parité pour le travail R
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-de-parite
+          path: |
+            ${{ runner.temp }}/parite.db
+            ${{ runner.temp }}/parite.db.kpis.json
+          retention-days: 1
+
+  # -------------------------------------------------------------------
+  # Dashboard R : chargement, générateur, interface, parité avec Python
+  # -------------------------------------------------------------------
+  r:
+    name: Pile R (Shiny)
+    runs-on: ubuntu-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+
+      - name: Installer les paquets R
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::shiny
+            any::bslib
+            any::DBI
+            any::RSQLite
+            any::jsonlite
+            any::plotly
+            any::DT
+
+      - name: Récupérer la base de parité
+        uses: actions/download-artifact@v4
+        with:
+          name: base-de-parite
+          path: parite
+
+      - name: Tests R et parité des chiffres avec Python
+        env:
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
+        run: Rscript tests/test_shiny.R parite/parite.db
+
+  # -------------------------------------------------------------------
+  # Fronts web : syntaxe du front sans dépendance, compilation Angular
+  # -------------------------------------------------------------------
+  web:
+    name: Fronts web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: angular/package-lock.json
+
+      - name: Vérifier la syntaxe du front sans dépendance
+        run: |
+          for fichier in web/js/*.js; do
+            node --check "$fichier" && echo "  ✓ $fichier"
+          done
+
+      - name: Installer les paquets Angular
+        working-directory: angular
+        run: npm ci --no-audit --no-fund
+
+      - name: Compiler l'application Angular
+        working-directory: angular
+        env:
+          NG_CLI_ANALYTICS: "false"
+        run: npm run build

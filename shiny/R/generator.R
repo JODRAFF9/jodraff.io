@@ -260,24 +260,35 @@ generate_company <- function(con, name, store_type,
                    list(line_month[line_paid], line_product[line_paid]), sum)
   month_keys <- sort(unique(format(days, "%Y-%m")))
 
-  for (i in seq_along(month_keys)) {
-    if (i == 1) next                       # couvert par le stock initial
-    previous <- month_keys[i - 1]
+  # Demande d'un mois donné, produit par produit (0 si le mois n'a rien vendu).
+  month_demand <- function(key) {
     sold <- rep(0, n_prod)
-    if (previous %in% rownames(demand)) {
-      row <- demand[previous, ]
+    if (key %in% rownames(demand)) {
+      row <- demand[key, ]
       idx <- as.integer(colnames(demand))
       sold[idx] <- ifelse(is.na(row), 0, row)
     }
-    daily_prev <- ifelse(sold > 0, sold / 30, products$daily * 0.35)
-    need <- daily_prev * products$target_days - products$stock_sim
-    qty <- round(need * runif(n_prod, 0.85, 1.15))
-    qty[qty < 0] <- 0
-    products$stock_sim <- products$stock_sim + qty - sold
-    order_day <- as.Date(paste0(month_keys[i], "-01")) + sample(0:4, 1)
-    if (order_day <= today && any(qty > 0)) {
-      create_purchase(con, order_day, products, qty, status = "reçue")
+    sold
+  }
+
+  # L'acheteur commande au début du mois, sur la base du mois écoulé et du
+  # stock dont il dispose à cet instant ; la consommation du mois est ensuite
+  # retranchée. Cet ordre reproduit exactement la chronologie du générateur
+  # Python : inverser les deux revient à sous-commander d'un mois entier.
+  for (i in seq_along(month_keys)) {
+    if (i > 1) {
+      sold_prev <- month_demand(month_keys[i - 1])
+      daily_prev <- ifelse(sold_prev > 0, sold_prev / 30, products$daily * 0.35)
+      need <- daily_prev * products$target_days - products$stock_sim
+      qty <- round(need * runif(n_prod, 0.85, 1.15))
+      qty[qty < 0] <- 0
+      products$stock_sim <- products$stock_sim + qty
+      order_day <- as.Date(paste0(month_keys[i], "-01")) + sample(0:4, 1)
+      if (order_day <= today && any(qty > 0)) {
+        create_purchase(con, order_day, products, qty, status = "reçue")
+      }
     }
+    products$stock_sim <- products$stock_sim - month_demand(month_keys[i])
   }
 
   # Une commande en cours de livraison, visible dans le département Achats
