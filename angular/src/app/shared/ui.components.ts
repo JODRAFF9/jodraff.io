@@ -43,7 +43,7 @@ export class CardComponent {
   readonly note = input<string>('');
 }
 
-/** Évolution période sur période — flèche + valeur, jamais la couleur seule. */
+/** Évolution période sur période, flèche + valeur, jamais la couleur seule. */
 @Component({
   selector: 'erp-delta',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -129,7 +129,7 @@ export class FeedComponent {
     tag: FeedComponent.TAGS[row.dept] ?? row.dept,
     color: deptColor(row.dept),
     full: row.label,
-    label: row.label.replace(/^Vente /, '').replace(/^Commande /, '').replace(/^Charge — /, ''),
+    label: row.label.replace(/^Vente /, '').replace(/^Commande /, '').replace(/^Charge, /, ''),
     amount: row.dept === 'STOCK'
       ? `${row.amount > 0 ? '+' : ''}${row.amount} u.`
       : compact(row.amount, this.symbol()),

@@ -1,5 +1,5 @@
 /* =====================================================================
-   Graphiques SVG écrits à la main — aucune bibliothèque, aucun CDN.
+   Graphiques SVG écrits à la main, aucune bibliothèque, aucun CDN.
    Mêmes règles que les dashboards Python et R :
      * un seul axe de valeurs (jamais deux échelles Y) ;
      * marques fines, extrémités arrondies, 2 px entre segments empilés ;

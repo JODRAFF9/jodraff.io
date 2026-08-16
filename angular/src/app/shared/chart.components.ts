@@ -5,7 +5,7 @@ import { EmptyComponent } from './ui.components';
 
 /*
  * Graphiques SVG en Angular : la géométrie est calculée dans des `computed()`
- * et liée dans le gabarit — pas de manipulation impérative du DOM.
+ * et liée dans le gabarit, pas de manipulation impérative du DOM.
  * Mêmes règles que les autres interfaces : un seul axe de valeurs, marques
  * fines, extrémités arrondies, légende dès deux séries, survol par défaut.
  */
@@ -190,7 +190,7 @@ export class LineChartComponent {
   }
 }
 
-/** Barres verticales — une série, une couleur, pas de légende. */
+/** Barres verticales, une série, une couleur, pas de légende. */
 @Component({
   selector: 'erp-bar-chart',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -276,7 +276,7 @@ export class BarChartComponent {
   });
 }
 
-/** Barres groupées ou empilées — plusieurs séries de MÊME unité. */
+/** Barres groupées ou empilées, plusieurs séries de MÊME unité. */
 @Component({
   selector: 'erp-grouped-bar-chart',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -302,7 +302,7 @@ export class BarChartComponent {
         @for (bar of bars(); track bar.key) {
           <rect [attr.x]="bar.x" [attr.y]="bar.y" [attr.width]="bar.w" [attr.height]="bar.h"
                 rx="4" [attr.fill]="bar.color">
-            <title>{{ bar.group }} — {{ bar.name }} : {{ bar.text }}</title>
+            <title>{{ bar.group }}, {{ bar.name }} : {{ bar.text }}</title>
           </rect>
         }
         <line class="axis-line" [attr.x1]="box().x" [attr.x2]="box().x + box().w"

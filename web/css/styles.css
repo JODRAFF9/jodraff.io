@@ -1,5 +1,5 @@
 /* =====================================================================
-   ERP Boutique — front web (HTML / CSS / JavaScript, sans dépendance)
+   ERP Boutique, front web (HTML / CSS / JavaScript, sans dépendance)
    Les jetons proviennent de shared/theme.json : mêmes valeurs que le
    dashboard Python/Dash, l'application Angular et le dashboard R Shiny.
    Le thème sombre est *choisi*, pas un simple inversement automatique.
@@ -272,6 +272,23 @@ tr.row-serious { background: var(--tint-serious); }
 .type-name { font-weight: 640; font-size: 14px; margin: 9px 0 4px; }
 .type-tag { font-size: 12px; color: var(--ink-2); line-height: 1.45; }
 .type-meta { font-size: 11px; color: var(--ink-muted); margin-top: 9px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Panneau affiché quand l'API ne répond pas */
+.api-down {
+  grid-column: 1 / -1; border: 1.5px dashed var(--border); border-radius: 12px;
+  padding: 20px 22px; background: var(--page);
+}
+.api-down-title { font-weight: 640; font-size: 15px; margin-bottom: 8px; }
+.api-down p { color: var(--ink-2); font-size: 13.5px; line-height: 1.55; margin-bottom: 10px; }
+.api-down pre {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; overflow-x: auto; margin: 0 0 12px;
+}
+.api-down code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 12.5px; color: var(--ink);
+}
+.api-down-note { font-size: 12.5px; color: var(--ink-muted); }
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }

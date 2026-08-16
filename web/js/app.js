@@ -27,9 +27,37 @@
   }
 
   /* ------------------------------------------------------- onboarding */
+  /**
+   * L'API est le seul fournisseur de données du front. Si elle ne répond pas,
+   * on affiche la marche à suivre plutôt que des champs vides, et on désactive
+   * la création tant que la connexion n'est pas rétablie.
+   */
+  function showApiError(message) {
+    $('type-grid').innerHTML =
+      '<div class="api-down">' +
+        '<div class="api-down-title">Le service de données n\'est pas démarré</div>' +
+        '<p>Le front web ne contient aucune donnée : il interroge l\'API. ' +
+        'Ouvrez un terminal à la racine du projet et lancez :</p>' +
+        '<pre><code>cd python\npip install -r requirements.txt\nuvicorn api.main:app --port 8000</code></pre>' +
+        '<p class="api-down-note">Adresse attendue : <code>' + Fmt.esc(Api.base) +
+        '</code>. Pour une API ailleurs, ajoutez <code>?api=https://mon-api</code> ' +
+        'à l\'adresse de cette page.</p>' +
+        '<button type="button" class="btn" id="btn-retry">Réessayer</button>' +
+      '</div>';
+    $('btn-create').disabled = true;
+    $('onboard-echo').textContent = '';
+    var notice = $('onboard-notice');
+    notice.className = 'notice notice-warn';
+    notice.innerHTML = '<span>⚠️</span><div><b>API injoignable.</b> ' +
+      Fmt.esc(message) + '</div>';
+    var retry = document.getElementById('btn-retry');
+    if (retry) retry.addEventListener('click', showOnboarding);
+  }
+
   function showOnboarding() {
     $('app').hidden = true;
     $('onboarding').hidden = false;
+    $('btn-create').disabled = false;
     Api.storeTypes().then(function (data) {
       state.types = data.types;
       $('type-grid').innerHTML = data.types.map(function (t) {
@@ -46,7 +74,7 @@
         return '<option value="' + c.code + '"' + (c.code === 'XOF' ? ' selected' : '') + '>' +
           Fmt.esc(c.label) + ' (' + Fmt.esc(c.symbol) + ')</option>';
       }).join('');
-    }).catch(function (error) { UI.toast(error.message, true); });
+    }).catch(function (error) { showApiError(error.message); });
   }
 
   $('type-grid').addEventListener('click', function (event) {
@@ -193,9 +221,8 @@
       navigate('overview');
     });
   }).catch(function (error) {
+    $('app').hidden = true;
     $('onboarding').hidden = false;
-    $('onboard-notice').className = 'notice notice-warn';
-    $('onboard-notice').innerHTML = '<span>⚠️</span><div><b>API injoignable.</b> ' +
-      Fmt.esc(error.message) + '</div>';
+    showApiError(error.message);
   });
 }());

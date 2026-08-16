@@ -22,7 +22,7 @@ def _db(db: Database | None) -> Database:
 
 
 # ==========================================================================
-# Vue d'ensemble — la consolidation inter-départements
+# Vue d'ensemble, la consolidation inter-départements
 # ==========================================================================
 def company_info(db: Database | None = None) -> dict | None:
     return _db(db).company()
@@ -120,11 +120,11 @@ def recent_activity(limit: int = 12, db: Database | None = None) -> list[dict]:
                  FROM purchases
                UNION ALL
                SELECT moved_at, 'STOCK',
-                      move_type || ' — ' || (SELECT name FROM products WHERE id = product_id),
+                      move_type || ', ' || (SELECT name FROM products WHERE id = product_id),
                       quantity
                  FROM stock_moves WHERE move_type IN ('perte', 'inventaire', 'retour')
                UNION ALL
-               SELECT spent_on || ' 12:00:00', 'FIN', 'Charge — ' || label, amount
+               SELECT spent_on || ' 12:00:00', 'FIN', 'Charge, ' || label, amount
                  FROM expenses
            ) ORDER BY at DESC LIMIT ?""",
         (limit,),

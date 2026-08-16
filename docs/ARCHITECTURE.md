@@ -8,7 +8,7 @@ chez un tiers passe son temps à réconcilier trois vérités divergentes.
 
 Cette plateforme applique la règle inverse : **une seule base, une seule vérité**.
 Chaque département écrit dans les mêmes tables, et les règles qui relient les
-départements vivent dans la base — pas dans l'application.
+départements vivent dans la base, pas dans l'application.
 
 Conséquence directe : il existe quatre interfaces (R Shiny, Python Dash, front web
 JavaScript, application Angular) et **aucune ne détient de logique métier propre**.
@@ -18,7 +18,7 @@ Elles affichent ce que la base calcule.
 
 ## Le modèle de données
 
-`shared/schema.sql` — un seul fichier, appliqué à l'identique par toutes les
+`shared/schema.sql`, un seul fichier, appliqué à l'identique par toutes les
 interfaces (`CREATE ... IF NOT EXISTS`, donc rejouable sans risque).
 
 ### Tables
@@ -52,7 +52,7 @@ Deux choix structurants :
 | `trg_sale_loyalty` | total d'une vente mis à jour | points de fidélité du client |
 
 C'est ce qui rend la démonstration vérifiable : une commande créée au statut
-« commandée » ne bouge pas le stock ; la passer à « reçue » l'incrémente — sans
+« commandée » ne bouge pas le stock ; la passer à « reçue » l'incrémente, sans
 qu'aucun code Python, R ou TypeScript n'intervienne.
 
 ### Les vues : la lecture consolidée
@@ -66,7 +66,7 @@ qu'aucun code Python, R ou TypeScript n'intervienne.
 | `v_customer_value` | valeur vie, fréquence, ancienneté du dernier achat |
 | `v_employee_performance` | jointure RH × Ventes : salaire d'un côté, tickets et CA de l'autre |
 | `v_financial_monthly` | compte de résultat mensuel : CA, coût des marchandises, charges, paie, résultat |
-| `v_department_dashboard` | un indicateur phare par département — la vue « données centrées » |
+| `v_department_dashboard` | un indicateur phare par département, la vue « données centrées » |
 
 Ces vues sont le contrat entre la base et les interfaces. Le front web et le
 dashboard R affichent la même colonne `net_result` ; elle n'est calculée qu'une fois.
@@ -76,24 +76,24 @@ dashboard R affichent la même colonne `net_result` ; elle n'est calculée qu'un
 ## Le générateur
 
 C'est le cœur de la « plateforme » : transformer **type + nom** en entreprise
-complète. Implémenté deux fois — `python/erp/generator.py` et
-`shiny/R/generator.R` — avec la même logique, pour que chaque pile reste autonome.
+complète. Implémenté deux fois, `python/erp/generator.py` et
+`shiny/R/generator.R`, avec la même logique, pour que chaque pile reste autonome.
 
 L'enchaînement est **chronologique**, et c'est ce qui rend les données crédibles :
 
-1. **Référentiels** — rayons, produits (prix convertis dans la devise choisie),
+1. **Référentiels**, rayons, produits (prix convertis dans la devise choisie),
    fournisseurs, personnel selon les métiers du secteur, fichier clients segmenté.
-2. **Stock initial** — une commande d'ouverture couvrant 16 à 55 jours de vente
+2. **Stock initial**, une commande d'ouverture couvrant 16 à 55 jours de vente
    selon une politique d'approvisionnement tirée *par article*.
-3. **Ventes, jour par jour** — le nombre de tickets dépend de la saisonnalité du
+3. **Ventes, jour par jour**, le nombre de tickets dépend de la saisonnalité du
    métier, du jour de la semaine, d'une croissance douce et d'un aléa. Les
    quantités par ligne sont corrélées au prix : on n'achète pas un téléviseur
    comme on achète du savon.
-4. **Réapprovisionnement mensuel** — l'acheteur commande sur la base du **mois
+4. **Réapprovisionnement mensuel**, l'acheteur commande sur la base du **mois
    précédent** et du stock simulé à cet instant. Ce décalage est délibéré : il
    produit naturellement des surstocks et des ruptures à piloter, au lieu d'une
    base parfaite et sans intérêt.
-5. **Pertes et inventaires**, puis **charges et paie** — les charges de structure
+5. **Pertes et inventaires**, puis **charges et paie**, les charges de structure
    sont calées sur la **marge brute** du mois, jamais sur le chiffre d'affaires :
    une activité à 18 % de marge (électronique) ne supporte pas la structure de
    coûts d'une activité à 52 % (mode).
@@ -117,10 +117,10 @@ vente) sur la pile Python.
 
 ### Accès direct à la base
 
-- **`python/erp/`** — `database.py` (connexion, schéma, helpers), `queries.py`
+- **`python/erp/`**, `database.py` (connexion, schéma, helpers), `queries.py`
   (une trentaine de fonctions métier renvoyant des `list[dict]`). Le dashboard Dash
   et l'API REST consomment tous deux `queries.py` : les mêmes chiffres, un seul code.
-- **`shiny/R/`** — `db.R` et `queries.R` jouent le même rôle avec DBI/RSQLite. Les
+- **`shiny/R/`**, `db.R` et `queries.R` jouent le même rôle avec DBI/RSQLite. Les
   requêtes sont volontairement identiques : elles s'appuient sur les vues SQL, donc
   il n'y a rien à réimplémenter.
 
@@ -169,12 +169,12 @@ adjacentes (ΔE ≥ 8 en OKLab ×100), plancher vision normale (ΔE ≥ 15).
 
 Règles appliquées dans les quatre interfaces :
 
-- couleurs de série assignées dans un **ordre fixe**, jamais recyclé — un filtre qui
+- couleurs de série assignées dans un **ordre fixe**, jamais recyclé, un filtre qui
   réduit le nombre de séries ne repeint pas les survivantes ;
 - **jamais deux axes Y** : deux mesures d'échelles différentes donnent deux
   graphiques (voir « CA et tickets » dans le département Ventes) ;
 - les couleurs de **statut** (rupture, alerte) sont réservées et toujours
-  accompagnées d'une icône et d'un libellé — la couleur ne porte jamais seule
+  accompagnées d'une icône et d'un libellé, la couleur ne porte jamais seule
   l'information ;
 - chaque graphique a sa **vue table** correspondante, triable ;
 - répartitions en barres horizontales triées plutôt qu'en camemberts ;
@@ -185,8 +185,7 @@ Règles appliquées dans les quatre interfaces :
 ## Limites assumées
 
 - **SQLite en écriture concurrente.** Le mode WAL supporte plusieurs lecteurs et un
-  écrivain. Pour un déploiement multi-caisses, porter le schéma sur PostgreSQL —
-  les triggers et les vues sont écrits en SQL proche du standard, la traduction est
+  écrivain. Pour un déploiement multi-caisses, porter le schéma sur PostgreSQL, les triggers et les vues sont écrits en SQL proche du standard, la traduction est
   mécanique (principalement la syntaxe `CREATE TRIGGER`).
 - **Pas d'authentification.** La plateforme est un générateur de tableaux de bord,
   pas un logiciel de caisse en production. Ajouter des comptes utilisateurs et des
@@ -229,13 +228,13 @@ Le test de parité est le plus sévère du lot. Il crée une base avec la pile
 Python, relève ses indicateurs, puis demande à la pile R de lire **le même
 fichier** : chiffre d'affaires, marge, panier moyen, valeur de stock, effectif
 et résultat doivent coïncider au centime. Une divergence signifierait qu'une des
-deux piles a réimplémenté une règle au lieu de lire la vue SQL — exactement ce
+deux piles a réimplémenté une règle au lieu de lire la vue SQL, exactement ce
 que l'architecture cherche à empêcher.
 
 Deux bugs ont été trouvés par cette démarche, tous deux côté R :
 
 1. `theme.R` lisait `THEME` à l'évaluation du fichier, alors que Shiny charge le
-   dossier `R/` avant `global.R` — d'où « objet 'THEME' introuvable » au premier
+   dossier `R/` avant `global.R`, d'où « objet 'THEME' introuvable » au premier
    lancement. Corrigé en déplaçant les ressources dans `R/aaa_shared.R`, qui ne
    dépend de rien et se charge en premier.
 2. La boucle de réapprovisionnement retranchait la consommation du mois **avant**

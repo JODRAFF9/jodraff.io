@@ -1,10 +1,10 @@
 # =====================================================================
-#  ERP Boutique — dashboard R Shiny
+#  ERP Boutique, dashboard R Shiny
 #  Amorçage : dépendances, puis chargement des modules.
 #
 #  Les ressources partagées (catalogue des métiers, jetons de design,
 #  chemins) vivent dans R/aaa_shared.R, qui ne dépend de rien et se charge
-#  toujours en premier — que ce soit Shiny qui charge le dossier R/
+#  toujours en premier, que ce soit Shiny qui charge le dossier R/
 #  automatiquement (depuis Shiny 1.5) ou la boucle ci-dessous.
 # =====================================================================
 

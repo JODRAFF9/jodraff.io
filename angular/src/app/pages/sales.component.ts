@@ -16,7 +16,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
     @if (data(); as d) {
       <erp-page-head title="🧾  Ventes"
         subtitle="Chaque ticket enregistré décharge le stock, alimente la fiche client et le
-                  compte de résultat — sans aucune ressaisie." />
+                  compte de résultat, sans aucune ressaisie." />
 
       <div class="grid grid-4">
         <erp-kpi label="Chiffre d'affaires" [value]="fmt(d.kpis.revenue)" [accent]="c('SALES')">
@@ -52,7 +52,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
       <div class="grid grid-3 mt">
         <div class="span-2">
           <erp-card title="Ventes par heure"
-                    note="Nombre de tickets — utile pour caler les plannings d'équipe.">
+                    note="Nombre de tickets, utile pour caler les plannings d'équipe.">
             <erp-bar-chart [labels]="hourLabels()" [values]="hourValues()" [height]="250" />
           </erp-card>
         </div>

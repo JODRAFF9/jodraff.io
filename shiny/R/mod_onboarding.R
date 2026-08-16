@@ -23,8 +23,8 @@ onboarding_ui <- function(id) {
       tags$p(
         class = "lead",
         "Indiquez le type de commerce que vous exploitez et son nom. La plateforme ",
-        "génère un ERP complet — ventes, stock, achats, clients, ressources humaines ",
-        "et finance — dans une base SQL unique, avec un historique d'activité déjà ",
+        "génère un ERP complet, ventes, stock, achats, clients, ressources humaines ",
+        "et finance, dans une base SQL unique, avec un historique d'activité déjà ",
         "consolidé."),
 
       h2(class = "step-label", span(class = "step-num", "1"), "Quel type de boutique ?"),
@@ -92,11 +92,14 @@ onboarding_server <- function(id, con, on_created) {
 
     # Un observateur par vignette : le clic mémorise le type choisi.
     lapply(keys, function(key) {
+      # `ignoreNULL = TRUE` (défaut) suffit à ignorer la valeur initiale du
+      # bouton : inutile d'y ajouter `ignoreInit`, qui ferait en plus perdre
+      # le tout premier clic dans un cycle réactif encore vierge.
       observeEvent(input[[paste0("type_", key)]], {
         selected(key)
         session$sendCustomMessage("erp-select-type",
                                   list(id = session$ns(paste0("type_", key))))
-      }, ignoreInit = TRUE)
+      })
     })
 
     output$echo <- renderText({

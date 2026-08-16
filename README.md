@@ -1,4 +1,4 @@
-# ERP Boutique — plateforme de tableaux de bord de gestion
+# ERP Boutique, plateforme de tableaux de bord de gestion
 
 Une plateforme qui **génère l'ERP complet d'une boutique à partir de deux
 informations** : le type de commerce et son nom.
@@ -7,13 +7,13 @@ informations** : le type de commerce et son nom.
 L'utilisateur arrive sur un écran d'accueil, choisit « Supermarché », « Pharmacie »,
 « Quincaillerie »… saisit le nom de son enseigne, et obtient immédiatement un
 tableau de bord de gestion à la manière d'Odoo : ventes, stock, achats, clients,
-ressources humaines et finance — avec un historique d'activité déjà consolidé,
+ressources humaines et finance, avec un historique d'activité déjà consolidé,
 cohérent et exploitable.
 
 **Le principe central : les données des départements sont centralisées.**
 Il n'existe qu'une seule base SQL. Une vente saisie au département Ventes décharge
 le stock, alimente la fiche client et le compte de résultat *au même instant*,
-parce que ce sont des triggers SQL qui propagent l'écriture — pas du code applicatif
+parce que ce sont des triggers SQL qui propagent l'écriture, pas du code applicatif
 dupliqué dans chaque interface.
 
 ---
@@ -120,7 +120,7 @@ dupliquer une seule règle de gestion.
 ② décrit le métier en JSON. ③ déroule le temps. ④ stocke. ⑤ propage.
 ⑥ consolide. ⑦ traduit. ⑧⑨⑩ affichent.
 
-Si un chiffre est faux, il n'y a qu'un seul endroit à corriger — et les quatre
+Si un chiffre est faux, il n'y a qu'un seul endroit à corriger, et les quatre
 interfaces sont corrigées ensemble.
 
 ---
@@ -130,10 +130,10 @@ interfaces sont corrigées ensemble.
 | Dossier | Objectif général |
 |---|---|
 | `shared/` | **Le contrat commun.** Ce que les quatre interfaces doivent partager pour ne jamais diverger : le modèle SQL, le catalogue des métiers, les jetons de design. |
-| `python/erp/` | **Le noyau métier.** Créer une entreprise, lire la base, formater. Consommé par le dashboard Dash, l'API et la ligne de commande — écrit une fois. |
+| `python/erp/` | **Le noyau métier.** Créer une entreprise, lire la base, formater. Consommé par le dashboard Dash, l'API et la ligne de commande, écrit une fois. |
 | `python/dash_app/` | **Le tableau de bord Python.** Sept pages, une par département, pour l'analyste qui travaille déjà en Python. |
 | `python/api/` | **La porte d'entrée des clients web.** Exposer la base en REST pour que les fronts n'aient pas besoin d'un accès direct. |
-| `python/cli.py` | **L'usage sans écran.** Préparer une base, consulter les indicateurs, réinitialiser — utile en démonstration comme en intégration continue. |
+| `python/cli.py` | **L'usage sans écran.** Préparer une base, consulter les indicateurs, réinitialiser, utile en démonstration comme en intégration continue. |
 | `shiny/` | **Le tableau de bord R.** Même produit, idiome R : pour l'utilisateur qui vit dans RStudio. |
 | `web/` | **La preuve par la simplicité.** Un ERP consultable sans build, sans dépendance et sans réseau. Les graphiques SVG y sont écrits à la main. |
 | `angular/` | **La version applicative.** Typage strict, chargement paresseux par département : la forme qu'aurait le produit dans une équipe front. |
@@ -311,7 +311,7 @@ Toute règle écrite en Python devrait être réécrite en R et en TypeScript, a
 dérive que cela implique. Écrite en SQL, elle est appliquée une fois pour toutes.
 
 **Pourquoi des graphiques SVG écrits à la main dans `web/` ?** Pour que le front
-fonctionne sans réseau, sans CDN et sans étape de build — et pour montrer la
+fonctionne sans réseau, sans CDN et sans étape de build, et pour montrer la
 mécanique là où Dash, plotly et Angular la masquent.
 
 Le système visuel est partagé (`shared/theme.json`) et sa palette catégorielle a
@@ -323,7 +323,7 @@ de statut sont réservées et toujours accompagnées d'une icône et d'un libell
 
 ## Documentation
 
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — le modèle de données, les triggers,
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), le modèle de données, les triggers,
   les vues, et comment les quatre interfaces s'y branchent.
-- [`docs/GUIDE-DEMARRAGE.md`](docs/GUIDE-DEMARRAGE.md) — installation détaillée,
+- [`docs/GUIDE-DEMARRAGE.md`](docs/GUIDE-DEMARRAGE.md), installation détaillée,
   variables d'environnement, ajout d'un métier, mise en production.

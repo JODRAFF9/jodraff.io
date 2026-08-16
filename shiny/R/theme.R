@@ -1,5 +1,5 @@
 # =====================================================================
-#  Système visuel — lu depuis shared/theme.json.
+#  Système visuel, lu depuis shared/theme.json.
 #
 #  Mêmes valeurs que le dashboard Python, le front web et Angular :
 #  palette catégorielle validée (bande de clarté, plancher de chroma,
@@ -14,7 +14,7 @@ SURFACE    <- THEME$surface$light
 DEPT_COLOR <- THEME$departments
 FONT       <- THEME$typography$font_family
 
-#' Couleur de la n-ième série — ordre FIXE, jamais recyclé par un filtre.
+#' Couleur de la n-ième série, ordre FIXE, jamais recyclé par un filtre.
 series_color <- function(index) SERIES[((index - 1) %% length(SERIES)) + 1]
 
 #' Couleur d'un département.
@@ -62,7 +62,7 @@ sequential_scale <- function(n) {
 
 #' Formatage monétaire compact : « 1,2 M FCFA ».
 fmt_compact <- function(value, symbol = "") {
-  if (length(value) == 0 || is.na(value[1])) return("—")
+  if (length(value) == 0 || is.na(value[1])) return("n.d.")
   value <- value[1]
   abs_value <- abs(value)
   sign <- if (value < 0) "-" else ""
@@ -83,7 +83,7 @@ fr_num <- function(value, decimals = 0) {
 
 #' Montant complet : « 1 234 567 FCFA ».
 fmt_money <- function(value, symbol = "", decimals = 0) {
-  if (length(value) == 0 || is.na(value[1])) return("—")
+  if (length(value) == 0 || is.na(value[1])) return("n.d.")
   paste0(fr_num(value[1], decimals), if (nzchar(symbol)) paste0(" ", symbol) else "")
 }
 
@@ -108,7 +108,7 @@ fr_day <- function(day) {
 #' Évolution : flèche + valeur, la couleur ne porte jamais seule l'information.
 delta_html <- function(pct) {
   if (is.null(pct) || is.na(pct)) {
-    return(shiny::span(class = "delta flat", "— nouvelle période"))
+    return(shiny::span(class = "delta flat", "nouvelle période"))
   }
   flat <- abs(pct) < 0.05
   class <- if (flat) "flat" else if (pct > 0) "up" else "down"

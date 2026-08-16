@@ -1,7 +1,7 @@
 {
   "name": "erp-boutique-angular",
   "version": "1.0.0",
-  "description": "Application Angular de la plateforme ERP Boutique — consomme l'API REST FastAPI qui expose la base SQL centrale.",
+  "description": "Application Angular de la plateforme ERP Boutique, consomme l'API REST FastAPI qui expose la base SQL centrale.",
   "private": true,
   "scripts": {
     "start": "ng serve --port 4200",

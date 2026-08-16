@@ -15,7 +15,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
     @if (data(); as d) {
       <erp-page-head
         [title]="d.company.logo_emoji + '  ' + d.company.name"
-        [subtitle]="d.company.store_label + ' — ' + d.company.city + ', ' + d.company.country +
+        [subtitle]="d.company.store_label + ', ' + d.company.city + ', ' + d.company.country +
                     '. Toutes les cartes sont calculées en direct sur la base SQL centrale.'" />
 
       <div class="grid grid-kpi">
@@ -44,7 +44,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
       <div class="mt">
         <erp-card title="Départements connectés à la base centrale"
                   note="Une écriture faite dans un département met immédiatement à jour les
-                        indicateurs des autres — c'est le rôle des triggers SQL.">
+                        indicateurs des autres, c'est le rôle des triggers SQL.">
           <div class="dept-strip">
             @for (dept of d.departments; track dept.dept) {
               <span class="dept-chip">

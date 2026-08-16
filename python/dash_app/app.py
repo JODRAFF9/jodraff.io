@@ -1,4 +1,4 @@
-"""Dashboard ERP — plateforme Python (Plotly Dash).
+"""Dashboard ERP, plateforme Python (Plotly Dash).
 
 Lancement :
     cd python && python -m dash_app.app        (ou : python dash_app/app.py)
@@ -35,7 +35,7 @@ DEPT = {d["code"]: d for d in DEPARTMENTS}
 
 app = Dash(
     __name__,
-    title="ERP Boutique — tableau de bord",
+    title="ERP Boutique, tableau de bord",
     update_title="Calcul…",
     suppress_callback_exceptions=True,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],

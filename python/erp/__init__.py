@@ -1,4 +1,4 @@
-"""ERP Boutique — noyau Python partagé.
+"""ERP Boutique, noyau Python partagé.
 
 Ce paquet contient tout ce qui ne dépend pas d'une interface :
     config      : catalogue des types de boutiques (shared/store_types.json)

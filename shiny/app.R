@@ -1,5 +1,5 @@
 # =====================================================================
-#  ERP Boutique — dashboard R Shiny
+#  ERP Boutique, dashboard R Shiny
 #
 #  Lancement :
 #      cd shiny && Rscript -e "shiny::runApp('.', port = 3838)"
@@ -20,7 +20,7 @@ if (!exists("CATALOG")) source("global.R", encoding = "UTF-8")
 ui <- function(request) {
   tagList(
     tags$head(
-      tags$title("ERP Boutique — tableau de bord"),
+      tags$title("ERP Boutique, tableau de bord"),
       tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
       tags$link(rel = "stylesheet", href = "styles.css"),
       tags$script(HTML("
@@ -115,13 +115,13 @@ dashboard_ui <- function(company) {
            sprintf("Base SQL centrale · %s · TVA %s %%",
                    company$currency, fr_num(company$tax_rate * 100, 0))),
       actionButton("reset", "Réinitialiser", class = "btn btn-danger btn-sm")),
-    nav_panel(title = "\U0001F4CA Vue d'ensemble", overview_ui("overview")),
-    nav_panel(title = "\U0001F9FE Ventes",         sales_ui("sales")),
-    nav_panel(title = "\U0001F4E6 Stock",          stock_ui("stock")),
-    nav_panel(title = "\U0001F69A Achats",         purchasing_ui("purchasing")),
-    nav_panel(title = "\U0001F465 Clients",        crm_ui("crm")),
-    nav_panel(title = "\U0001F9D1 Ressources humaines", hr_ui("hr")),
-    nav_panel(title = "\U0001F4B0 Finance",        finance_ui("finance"))
+    bslib::nav_panel(title = "\U0001F4CA Vue d'ensemble", overview_ui("overview")),
+    bslib::nav_panel(title = "\U0001F9FE Ventes",         sales_ui("sales")),
+    bslib::nav_panel(title = "\U0001F4E6 Stock",          stock_ui("stock")),
+    bslib::nav_panel(title = "\U0001F69A Achats",         purchasing_ui("purchasing")),
+    bslib::nav_panel(title = "\U0001F465 Clients",        crm_ui("crm")),
+    bslib::nav_panel(title = "\U0001F9D1 Ressources humaines", hr_ui("hr")),
+    bslib::nav_panel(title = "\U0001F4B0 Finance",        finance_ui("finance"))
   )
 }
 

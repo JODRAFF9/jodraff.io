@@ -1,4 +1,4 @@
-"""Vue d'ensemble — la consolidation de tous les départements.
+"""Vue d'ensemble, la consolidation de tous les départements.
 
 C'est la page qui matérialise le principe « données centrées » : chaque carte
 provient d'un département différent, mais toutes lisent les mêmes tables.
@@ -29,7 +29,7 @@ def layout(db, days: int = 30) -> html.Div:
     return html.Div([
         page_header(
             f"{company['logo_emoji']}  {company['name']}",
-            f"{company['store_label']} — {company['city']}, {company['country']}. "
+            f"{company['store_label']}, {company['city']}, {company['country']}. "
             f"Toutes les cartes ci-dessous sont calculées en direct sur la base SQL centrale.",
         ),
 
@@ -75,7 +75,7 @@ def layout(db, days: int = 30) -> html.Div:
                 ], className="summary-grid", style={"marginTop": "12px"}),
             ],
             note="Une écriture faite dans un département met immédiatement à jour "
-                 "les indicateurs des autres — c'est le rôle des triggers SQL.",
+                 "les indicateurs des autres, c'est le rôle des triggers SQL.",
         ),
 
         # --- graphiques ------------------------------------------------

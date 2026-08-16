@@ -1,5 +1,5 @@
 # =====================================================================
-#  Ressources partagées — chargées AVANT tout le reste.
+#  Ressources partagées, chargées AVANT tout le reste.
 #
 #  Le nom du fichier commence par « aaa_ » à dessein : Shiny charge les
 #  fichiers du dossier R/ par ordre alphabétique, et `theme.R` a besoin de

@@ -42,14 +42,31 @@ page_header <- function(title, subtitle) {
 #' Grille de tuiles.
 kpi_grid <- function(...) div(class = "grid grid-kpi", ...)
 
-#' Tableau interactif — c'est aussi la « vue table » des graphiques.
+#' Tableau interactif, c'est aussi la « vue table » des graphiques.
 #'
 #' @param columns liste nommée : nom affiché -> liste(col, type, digits)
 erp_table <- function(data, columns, page_length = 10, symbol = "") {
-  if (is.null(data) || nrow(data) == 0) {
-    return(div(class = "empty", span(class = "mark", "∅"), "Aucune ligne."))
-  }
   keep <- vapply(columns, function(spec) spec$col, "")
+
+  # Un tableau vide est un cas NORMAL : aucune alerte de stock, aucun client
+  # à relancer, aucun réapprovisionnement nécessaire. Il faut donc renvoyer
+  # un tableau vide, et surtout pas une balise HTML, que DT::renderDT()
+  # refuserait (« 'data' must be 2-dimensional »).
+  if (is.null(data) || !is.data.frame(data) || nrow(data) == 0) {
+    colonnes_vides <- lapply(columns, function(spec) {
+      if (identical(spec$type, "num") || identical(spec$type, "money")) {
+        numeric(0)
+      } else {
+        character(0)
+      }
+    })
+    data <- as.data.frame(stats::setNames(colonnes_vides, keep),
+                          stringsAsFactors = FALSE)
+  }
+
+  # Une colonne absente de la requête ne doit pas faire tomber l'interface.
+  for (colonne in setdiff(keep, names(data))) data[[colonne]] <- NA
+
   display <- data[, keep, drop = FALSE]
   names(display) <- names(columns)
 
@@ -68,11 +85,13 @@ erp_table <- function(data, columns, page_length = 10, symbol = "") {
       language = list(
         search = "Filtrer :", info = "_START_ à _END_ sur _TOTAL_ lignes",
         infoEmpty = "Aucune ligne", zeroRecords = "Aucun résultat",
+        emptyTable = "Aucune ligne à afficher",
         paginate = list(previous = "Précédent", `next` = "Suivant"))
     ),
     selection = "none"
   )
   for (i in numeric_cols) {
+    if (!is.numeric(display[[i]])) next          # colonne absente ou vide
     digits <- columns[[i]]$digits %||% 0
     table <- DT::formatRound(table, names(columns)[i], digits = digits,
                              mark = " ", dec.mark = ",")
@@ -98,7 +117,7 @@ activity_feed <- function(rows, symbol) {
     } else {
       fmt_compact(row$amount, symbol)
     }
-    label <- sub("^(Vente |Commande |Charge — )", "", row$label)
+    label <- sub("^(Vente |Commande |Charge, )", "", row$label)
     when <- if (nchar(row$at) >= 16) {
       paste0(substr(row$at, 9, 10), "/", substr(row$at, 6, 7), " ", substr(row$at, 12, 16))
     } else row$at

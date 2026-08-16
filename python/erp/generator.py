@@ -1,7 +1,6 @@
 """Générateur d'entreprise : c'est le cœur de la « plateforme ».
 
-À partir de deux informations données par l'utilisateur au tout début —
-**le type de boutique** et **son nom** — le générateur construit un ERP
+À partir de deux informations données par l'utilisateur au tout début, **le type de boutique** et **son nom**, le générateur construit un ERP
 complet dans la base SQL centrale :
 
     référentiels (rayons, produits, fournisseurs, clients, personnel)
@@ -229,8 +228,8 @@ def create_company(
     # ---- 6 à 8. Stock initial, ventes et réapprovisionnements ----------
     # Ces trois étapes sont générées **chronologiquement dans une seule
     # boucle** : l'acheteur ne connaît que le passé au moment où il commande.
-    # C'est ce qui produit des niveaux de stock crédibles — surstocks d'un
-    # côté, alertes et ruptures de l'autre — au lieu d'une base parfaite.
+    # C'est ce qui produit des niveaux de stock crédibles, surstocks d'un
+    # côté, alertes et ruptures de l'autre, au lieu d'une base parfaite.
     step("Réception du stock initial…", 0.34)
     avg_lines = sum(spec["basket_lines"]) / 2
     daily_tickets = max(4, int(spec["daily_tickets"] * traffic_scale))
@@ -285,7 +284,7 @@ def create_company(
         if month_key != current_month:
             if current_month is not None:
                 monthly_restock(day + timedelta(days=rng.randint(0, 4)), current_month)
-                step(f"Ventes — {day.strftime('%m/%Y')}…",
+                step(f"Ventes, {day.strftime('%m/%Y')}…",
                      0.40 + 0.44 * offset / max(1, n_days))
             current_month = month_key
         demand = monthly_demand.setdefault(month_key, {})

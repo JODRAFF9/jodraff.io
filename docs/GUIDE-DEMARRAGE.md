@@ -7,7 +7,7 @@
 | Python (dashboard, API, CLI) | Python ≥ 3.10 |
 | R (dashboard Shiny) | R ≥ 4.1 |
 | Angular | Node.js ≥ 20.19 ou ≥ 22.12 |
-| Front web | rien — un navigateur suffit |
+| Front web | rien, un navigateur suffit |
 
 La base de données est **SQLite** : aucun serveur à installer.
 
@@ -178,7 +178,7 @@ distinctes des couleurs de série : elles signalent un état, pas une catégorie
 
 ## Mise en production
 
-**Dashboard Dash** — servir via un serveur WSGI :
+**Dashboard Dash**, servir via un serveur WSGI :
 
 ```bash
 gunicorn "dash_app.app:server" --bind 0.0.0.0:8050 --workers 2
@@ -194,16 +194,16 @@ Restreindre les origines autorisées dans `api/main.py` (`allow_origins`) avant 
 exposition publique : la valeur `["*"]` livrée convient au développement, pas à une
 mise en ligne.
 
-**Front web et Angular** — ce sont des fichiers statiques (`web/`,
+**Front web et Angular**, ce sont des fichiers statiques (`web/`,
 `angular/dist/erp-boutique/browser/`) : n'importe quel serveur web fait l'affaire.
 
-**Dashboard Shiny** — Shiny Server, ou :
+**Dashboard Shiny**, Shiny Server, ou :
 
 ```bash
 Rscript -e "shiny::runApp('shiny', host = '0.0.0.0', port = 3838)"
 ```
 
-**Base de données** — sauvegarder le fichier pointé par `ERP_DB_PATH`. Avec le mode
+**Base de données**, sauvegarder le fichier pointé par `ERP_DB_PATH`. Avec le mode
 WAL, sauvegarder aussi les fichiers `-wal` et `-shm`, ou passer par
 `sqlite3 base.db ".backup sauvegarde.db"`.
 

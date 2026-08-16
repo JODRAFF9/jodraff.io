@@ -20,7 +20,7 @@ function cells(row: TableRow): Record<string, unknown> {
 }
 
 /**
- * Tableau triable — il tient aussi le rôle de « vue table » des graphiques :
+ * Tableau triable, il tient aussi le rôle de « vue table » des graphiques :
  * l'information reste accessible même quand la couleur ne l'est pas.
  */
 @Component({
@@ -65,8 +65,7 @@ function cells(row: TableRow): Record<string, unknown> {
         </table>
         <div class="table-foot">
           @if (rows().length > visible().length) {
-            {{ visible().length }} lignes affichées sur {{ rows().length }} —
-          }
+            {{ visible().length }} lignes affichées sur {{ rows().length }}, }
           cliquez sur un en-tête pour trier.
         </div>
       </div>
@@ -126,7 +125,7 @@ export class DataTableComponent {
 
   protected cell(row: TableRow, col: Column): string {
     const value = cells(row)[col.key];
-    if (value === null || value === undefined) return '—';
+    if (value === null || value === undefined) return 'n.d.';
     switch (col.type) {
       case 'money': return money(Number(value), this.symbol(), col.decimals ?? 0);
       case 'num': return num(Number(value), col.decimals ?? 0);

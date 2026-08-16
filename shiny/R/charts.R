@@ -2,7 +2,7 @@
 #  Constructeurs de graphiques (plotly).
 #
 #  Règles appliquées partout, comme dans les autres interfaces :
-#    * un seul axe de valeurs — jamais deux échelles Y ;
+#    * un seul axe de valeurs, jamais deux échelles Y ;
 #    * marques fines, extrémités arrondies, 2 px entre segments empilés ;
 #    * légende dès deux séries, étiquettes directes sélectives ;
 #    * grille discrète, axes en encre atténuée, survol actif.
@@ -53,7 +53,7 @@ chart_line <- function(x, series, symbol = NULL, height = 280, fill = FALSE) {
   apply_layout(p, height, showlegend = length(series) > 1, symbol = symbol)
 }
 
-#' Barres verticales — une série, une couleur, pas de légende.
+#' Barres verticales, une série, une couleur, pas de légende.
 chart_bars <- function(labels, values, symbol = NULL, height = 280, color = NULL) {
   if (length(labels) == 0) return(chart_empty("Aucune donnée."))
   p <- plotly::plot_ly(
@@ -63,7 +63,7 @@ chart_bars <- function(labels, values, symbol = NULL, height = 280, color = NULL
   apply_layout(p, height, symbol = symbol, bargap = 0.3)
 }
 
-#' Barres groupées ou empilées — séries de MÊME unité.
+#' Barres groupées ou empilées, séries de MÊME unité.
 chart_grouped <- function(x, series, symbol = NULL, height = 300, stacked = FALSE) {
   if (length(x) == 0) return(chart_empty("Aucune donnée."))
   p <- plotly::plot_ly()
@@ -153,7 +153,7 @@ chart_heatmap <- function(z, x, y, height = 300, unit = "") {
                               tickfont = list(color = SURFACE$ink_muted, size = 11)))
 }
 
-#' Graphique vide (message centré) — évite une zone blanche sans explication.
+#' Graphique vide (message centré), évite une zone blanche sans explication.
 chart_empty <- function(message) {
   plotly::config(
     plotly::layout(

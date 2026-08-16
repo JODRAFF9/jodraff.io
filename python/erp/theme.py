@@ -4,12 +4,12 @@ La palette catégorielle est validée : bande de clarté, plancher de chroma,
 séparation daltonisme sur les paires adjacentes et plancher vision normale.
 Règles appliquées partout dans les dashboards :
 
-* les couleurs de série sont assignées dans un **ordre fixe** — un filtre qui
+* les couleurs de série sont assignées dans un **ordre fixe**, un filtre qui
   réduit le nombre de séries ne repeint jamais les survivantes ;
 * les couleurs de **statut** (rupture, alerte…) sont réservées et toujours
   accompagnées d'une icône et d'un libellé ;
 * le texte porte les jetons d'encre, jamais la couleur de la série ;
-* pas de double axe Y — deux mesures d'échelles différentes = deux graphiques.
+* pas de double axe Y, deux mesures d'échelles différentes = deux graphiques.
 """
 
 from __future__ import annotations

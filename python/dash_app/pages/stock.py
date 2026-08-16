@@ -1,4 +1,4 @@
-"""Département Stock — niveaux, valorisation, rotation, alertes et mouvements."""
+"""Département Stock, niveaux, valorisation, rotation, alertes et mouvements."""
 
 from __future__ import annotations
 
@@ -105,7 +105,7 @@ def layout(db, days: int = 30) -> html.Div:
         ], className="grid grid-3", style={"marginTop": "14px"}),
 
         html.Div([
-            card("Rotation — combien de jours de stock reste-t-il ?",
+            card("Rotation, combien de jours de stock reste-t-il ?",
                  data_table(
                      [r for r in rotation if r["days_of_stock"] is not None][:60],
                      [{"name": "Produit", "id": "product"},

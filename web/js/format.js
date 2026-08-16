@@ -1,5 +1,5 @@
 /* =====================================================================
-   Formatage — français, sans dépendance.
+   Formatage, français, sans dépendance.
    ===================================================================== */
 (function (global) {
   'use strict';
@@ -9,7 +9,7 @@
 
   /** 1234567 -> "1 234 567" */
   function number(value, decimals) {
-    if (value === null || value === undefined || isNaN(value)) return '—';
+    if (value === null || value === undefined || isNaN(value)) return 'n.d.';
     var d = decimals === undefined ? 0 : decimals;
     return Number(value).toFixed(d)
       .replace('.', ',')
@@ -18,13 +18,13 @@
 
   /** Montant complet : "1 234 567 FCFA" */
   function money(value, symbol, decimals) {
-    if (value === null || value === undefined || isNaN(value)) return '—';
+    if (value === null || value === undefined || isNaN(value)) return 'n.d.';
     return number(value, decimals || 0) + ' ' + (symbol || '');
   }
 
-  /** Montant compact : "1,2 M FCFA" — pour les tuiles et les axes. */
+  /** Montant compact : "1,2 M FCFA", pour les tuiles et les axes. */
   function compact(value, symbol) {
-    if (value === null || value === undefined || isNaN(value)) return '—';
+    if (value === null || value === undefined || isNaN(value)) return 'n.d.';
     var a = Math.abs(value), sign = value < 0 ? '-' : '', sym = symbol ? ' ' + symbol : '';
     if (a >= 1e9) return sign + (a / 1e9).toFixed(1).replace('.', ',') + ' Md' + sym;
     if (a >= 1e6) return sign + (a / 1e6).toFixed(1).replace('.', ',') + ' M' + sym;
@@ -47,7 +47,7 @@
   }
 
   function percent(value, decimals) {
-    if (value === null || value === undefined || isNaN(value)) return '—';
+    if (value === null || value === undefined || isNaN(value)) return 'n.d.';
     return number(value * 100, decimals === undefined ? 1 : decimals) + ' %';
   }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =====================================================================
-#  Pipeline de test complet — une seule commande.
+#  Pipeline de test complet, une seule commande.
 #
 #      ./scripts/run-tests.sh                 tout ce qui est disponible
 #      ./scripts/run-tests.sh --install       installe d'abord les dépendances
@@ -94,7 +94,7 @@ else
 fi
 
 # ---------------------------------------------------------------------
-# 3. Pile R : chargement, générateur, interface — et parité avec Python
+# 3. Pile R : chargement, générateur, interface, et parité avec Python
 # ---------------------------------------------------------------------
 titre "3. Pile R (dashboard Shiny) et parité avec Python"
 if command -v Rscript > /dev/null; then

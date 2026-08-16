@@ -17,7 +17,7 @@ def money(value: float, sym: str = "FCFA", compact: bool = True) -> str:
 def delta_badge(pct: float | None, positive_is_good: bool = True) -> html.Span:
     """Évolution vs période précédente : flèche + signe + valeur (jamais la couleur seule)."""
     if pct is None:
-        return html.Span("— nouvelle période", className="delta flat")
+        return html.Span("nouvelle période", className="delta flat")
     good = (pct >= 0) if positive_is_good else (pct <= 0)
     cls = "flat" if abs(pct) < 0.05 else ("up" if good else "down")
     arrow = "→" if abs(pct) < 0.05 else ("↑" if pct > 0 else "↓")
@@ -121,7 +121,7 @@ def page_header(title: str, subtitle: str, actions: Any = None) -> html.Div:
 
 
 def period_selector(component_id: str, value: int = 30) -> html.Div:
-    """Sélecteur de période — une seule rangée de filtres au-dessus des graphiques."""
+    """Sélecteur de période, une seule rangée de filtres au-dessus des graphiques."""
     return html.Div(
         [
             html.Span("Période", style={"fontSize": "12px", "color": SURFACE["ink_muted"],
@@ -161,7 +161,7 @@ def activity_feed(rows: list[dict], symbol: str) -> html.Div:
         at = r["at"] or ""
         when = f"{at[8:10]}/{at[5:7]} {at[11:16]}" if len(at) >= 16 else at
         label = r["label"] or ""
-        for prefix in ("Vente ", "Commande ", "Charge \u2014 "):
+        for prefix in ("Vente ", "Commande ", "Charge, "):
             if label.startswith(prefix):
                 label = label[len(prefix):]
                 break

@@ -122,7 +122,7 @@ for (store_type in names(generated)) {
 }
 
 # =====================================================================
-section("3. Triggers — la centralisation")
+section("3. Triggers, la centralisation")
 # =====================================================================
 con <- generated[["generique"]]
 product <- db_one(con, "SELECT id, stock FROM products LIMIT 1")
@@ -189,7 +189,10 @@ check("q_kpis() renvoie les indicateurs attendus",
       all(c("revenue", "tickets", "margin_rate", "stock_value", "net_result") %in% names(kpis)))
 check("q_kpis() : chiffre d'affaires non nul", kpis$revenue > 0)
 
-suppressPackageStartupMessages({ library(shiny); library(plotly); library(DT); library(bslib) })
+# ATTENTION : on n'attache QUE shiny, exactement comme runApp(). Attacher
+# plotly, DT ou bslib ici masquerait les appels non qualifiés dans R/, # c'est précisément ce qui a laissé passer « impossible de trouver la
+# fonction renderPlotly » jusque chez l'utilisateur.
+suppressPackageStartupMessages(library(shiny))
 
 check("le thème bslib se construit", inherits(erp_theme(), "bs_theme"))
 check("l'écran d'accueil se construit",
@@ -200,6 +203,112 @@ for (module in c("overview", "sales", "stock", "purchasing", "crm", "hr", "finan
   check(sprintf("l'interface du module « %s » se construit", module),
         !inherits(res, "try-error"))
 }
+
+
+# ---------------------------------------------------------------------
+# Les fichiers de R/ sont chargés par Shiny sans qu'aucun library() n'ait
+# forcément tourné. Tout appel à une fonction de plotly, DT ou bslib doit
+# donc être qualifié par son paquet : plotly::renderPlotly(), et non
+# renderPlotly(). Ce contrôle relit le code source pour s'en assurer.
+# ---------------------------------------------------------------------
+unqualified_calls <- function(path, packages) {
+  parsed <- parse(path, keep.source = TRUE)
+  data <- utils::getParseData(parsed)
+  data <- data[data$terminal & data$token != "COMMENT", ]
+  data <- data[order(data$line1, data$col1), ]
+
+  exported <- unique(unlist(lapply(packages, getNamespaceExports)))
+  # Ce que shiny fournit déjà est disponible : runApp attache shiny.
+  exported <- setdiff(exported, getNamespaceExports("shiny"))
+
+  found <- character(0)
+  for (i in seq_len(nrow(data))) {
+    if (data$token[i] != "SYMBOL_FUNCTION_CALL") next
+    qualified <- i > 1 && data$token[i - 1] == "NS_GET"
+    if (!qualified && data$text[i] %in% exported) {
+      found <- c(found, sprintf("%s ligne %d : %s()",
+                                basename(path), data$line1[i], data$text[i]))
+    }
+  }
+  found
+}
+
+risky <- unlist(lapply(c(files, file.path(SHINY_DIR, "app.R")),
+                       unqualified_calls, packages = c("plotly", "DT", "bslib")))
+check("aucun appel non qualifié à plotly, DT ou bslib", length(risky) == 0)
+if (length(risky)) cat("      ", paste(risky, collapse = "\n      "), "\n")
+
+# ---------------------------------------------------------------------
+# Les fonctions SERVEUR des modules sont exercées pour de vrai : forcer la
+# lecture d'un output déclenche son rendu, donc la résolution de toutes les
+# fonctions qu'il appelle.
+# ---------------------------------------------------------------------
+module_outputs <- list(
+  overview   = c("head", "kpis", "departments", "daily", "category", "monthly", "feed"),
+  sales      = c("kpis", "revenue", "tickets", "payment", "channel", "affluence",
+                 "top", "sellers", "journal"),
+  stock      = c("kpis", "valuation", "share", "alerts", "moves", "catalog"),
+  purchasing = c("kpis", "monthly", "suppliers", "plan", "directory", "orders"),
+  crm        = c("kpis", "segments", "acquisition", "segment_table", "customers", "dormant"),
+  hr         = c("kpis", "payroll", "headcount", "departments", "staff"),
+  finance    = c("kpis", "monthly", "categories", "statement", "expenses")
+)
+
+for (module in names(module_outputs)) {
+  server_fn <- get(paste0(module, "_server"))
+  outcome <- tryCatch({
+    shiny::testServer(server_fn,
+      args = list(con = con, period = shiny::reactive(30)),
+      expr = {
+        for (nom in module_outputs[[module]]) {
+          invisible(output[[nom]])          # force le rendu
+        }
+      })
+    TRUE
+  }, error = function(e) conditionMessage(e))
+  check(sprintf("le serveur du module « %s » rend toutes ses sorties", module),
+        isTRUE(outcome))
+  if (!isTRUE(outcome)) cat("      ", outcome, "\n")
+}
+
+# ---------------------------------------------------------------------
+# L'écran d'accueil : le premier chemin emprunté par l'utilisateur. On joue
+# le parcours complet, choix du métier, saisie du nom, clic sur créer, sur
+# une base neuve, et on vérifie que l'ERP est bien construit.
+# ---------------------------------------------------------------------
+local({
+  con_neuf <- db_connect(file.path(tmp, "onboarding.db"))
+  db_reset(con_neuf)
+  cree <- NULL
+
+  outcome <- tryCatch({
+    shiny::testServer(
+      onboarding_server,
+      args = list(con = con_neuf, on_created = function(resume) cree <<- resume),
+      expr = {
+        # Une vraie session déclenche un premier cycle réactif au démarrage,
+        # avant toute interaction. On le reproduit pour que le test reflète
+        # le comportement du navigateur.
+        session$flushReact()
+        session$setInputs(type_generique = 1)
+        session$setInputs(name = "Boutique d'accueil", city = "Abidjan",
+                          country = "Côte d'Ivoire", currency = "XOF",
+                          months = "3", traffic = "0.4")
+        session$setInputs(create = 1)
+      })
+    TRUE
+  }, error = function(e) conditionMessage(e))
+
+  check("le parcours d'accueil crée l'ERP", isTRUE(outcome) && !is.null(cree))
+  if (!isTRUE(outcome)) cat("      ", outcome, "\n")
+  if (!is.null(cree)) {
+    check("l'accueil renseigne l'entreprise",
+          identical(db_company(con_neuf)$name, "Boutique d'accueil"))
+    check("l'accueil génère des ventes", cree$sales > 0)
+    check("l'accueil génère un stock positif", cree$stock_value > 0)
+  }
+  DBI::dbDisconnect(con_neuf)
+})
 
 daily <- q_sales_daily(con, 30)
 check("graphique en courbe",
@@ -242,7 +351,7 @@ if (!nzchar(python_db) || !file.exists(python_db)) {
     mesure <- q_kpis(pcon, 30)
 
     compare <- function(label, r_value, py_value, tolerance = 0.01) {
-      check(sprintf("parité — %s", label),
+      check(sprintf("parité, %s", label),
             abs(as.numeric(r_value) - as.numeric(py_value)) <= tolerance)
     }
     compare("chiffre d'affaires", mesure$revenue, reference$revenue)
@@ -254,11 +363,11 @@ if (!nzchar(python_db) || !file.exists(python_db)) {
     compare("effectif", mesure$headcount, reference$headcount)
     compare("résultat du mois", mesure$net_result, reference$net_result)
 
-    check("parité — nombre de produits",
+    check("parité, nombre de produits",
           nrow(q_products(pcon)) == reference$products)
-    check("parité — nombre de fournisseurs",
+    check("parité, nombre de fournisseurs",
           nrow(q_suppliers(pcon)) == reference$suppliers)
-    check("parité — compte de résultat mensuel",
+    check("parité, compte de résultat mensuel",
           nrow(q_financial(pcon)) == reference$financial_months)
     DBI::dbDisconnect(pcon)
   }

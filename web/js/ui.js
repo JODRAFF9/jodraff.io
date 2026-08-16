@@ -1,5 +1,5 @@
 /* =====================================================================
-   Composants d'interface — chaînes HTML assemblées puis injectées.
+   Composants d'interface, chaînes HTML assemblées puis injectées.
    Toute donnée externe passe par Fmt.esc().
    ===================================================================== */
 (function (global) {
@@ -15,7 +15,7 @@
   /** Évolution : flèche + valeur, la couleur ne porte jamais seule l'information. */
   function delta(pct) {
     if (pct === null || pct === undefined) {
-      return '<span class="delta flat">— nouvelle période</span>';
+      return '<span class="delta flat">nouvelle période</span>';
     }
     var cls = Math.abs(pct) < 0.05 ? 'flat' : (pct > 0 ? 'up' : 'down');
     var arrow = Math.abs(pct) < 0.05 ? '→' : (pct > 0 ? '↑' : '↓');
@@ -55,7 +55,7 @@
   }
 
   /**
-   * Tableau triable — c'est aussi la « vue table » des graphiques.
+   * Tableau triable, c'est aussi la « vue table » des graphiques.
    * columns : [{ key, label, type: 'text'|'num'|'money'|'badge', decimals, strong }]
    */
   var tableSeq = 0;
@@ -109,14 +109,14 @@
         }
         if (col.type === 'percent') return '<td class="num">' + Fmt.percent(value) + '</td>';
         if (col.type === 'date') return '<td>' + Fmt.esc(Fmt.dateTime(value)) + '</td>';
-        return '<td>' + Fmt.esc(value === null || value === undefined ? '—' : value) + '</td>';
+        return '<td>' + Fmt.esc(value === null || value === undefined ? 'n.d.' : value) + '</td>';
       }).join('');
       return '<tr class="' + cls + '">' + cells + '</tr>';
     }).join('');
 
     var foot = state.rows.length > shown.length
       ? '<div class="table-foot">' + shown.length + ' lignes affichées sur ' +
-        state.rows.length + ' — cliquez sur un en-tête pour trier.</div>'
+        state.rows.length + ', cliquez sur un en-tête pour trier.</div>'
       : '<div class="table-foot">Cliquez sur un en-tête pour trier.</div>';
     return '<table><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table>' + foot;
   }
@@ -138,7 +138,7 @@
     var tags = { SALES: 'VENTE', PURCH: 'ACHAT', STOCK: 'STOCK', FIN: 'CHARGE' };
     return rows.map(function (row) {
       var label = String(row.label || '')
-        .replace(/^Vente /, '').replace(/^Commande /, '').replace(/^Charge — /, '');
+        .replace(/^Vente /, '').replace(/^Commande /, '').replace(/^Charge, /, '');
       var amount = row.dept === 'STOCK'
         ? (row.amount > 0 ? '+' : '') + Fmt.number(row.amount, 0) + ' u.'
         : Fmt.compact(row.amount, symbol);

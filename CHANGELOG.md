@@ -1,10 +1,10 @@
 # Journal des versions
 
-## v1.0.0 — première version
+## v1.0.0, première version
 
 Plateforme complète : à partir du **type de commerce** et du **nom de l'enseigne**,
-elle génère un ERP de gestion de boutique — ventes, stock, achats, clients,
-ressources humaines et finance — avec un historique d'activité déjà consolidé.
+elle génère un ERP de gestion de boutique, ventes, stock, achats, clients,
+ressources humaines et finance, avec un historique d'activité déjà consolidé.
 
 ### Le principe : des données de départements centralisées
 
@@ -24,25 +24,25 @@ recalcule quoi que ce soit de son côté.
 
 ### Interfaces
 
-- **Dashboard R Shiny** (`shiny/`) — bslib, plotly, DT ; un module par département.
-- **Dashboard Python** (`python/dash_app/`) — Plotly Dash, 7 pages, CSS autonome
+- **Dashboard R Shiny** (`shiny/`), bslib, plotly, DT ; un module par département.
+- **Dashboard Python** (`python/dash_app/`), Plotly Dash, 7 pages, CSS autonome
   sans CDN.
-- **API REST** (`python/api/`) — FastAPI, une trentaine de routes documentées.
-- **Front web** (`web/`) — HTML / CSS / JavaScript sans aucune dépendance,
+- **API REST** (`python/api/`), FastAPI, une trentaine de routes documentées.
+- **Front web** (`web/`), HTML / CSS / JavaScript sans aucune dépendance,
   graphiques SVG écrits à la main, fonctionne hors ligne.
-- **Application Angular** (`angular/`) — Angular 21, composants standalone,
+- **Application Angular** (`angular/`), Angular 21, composants standalone,
   signals, routes paresseuses, TypeScript strict.
-- **Ligne de commande** (`python/cli.py`) — création, statistiques, remise à zéro.
+- **Ligne de commande** (`python/cli.py`), création, statistiques, remise à zéro.
 
 ### Ressources partagées
 
-- `shared/schema.sql` — 16 tables, 5 triggers, 9 vues consolidées, colonnes
+- `shared/schema.sql`, 16 tables, 5 triggers, 9 vues consolidées, colonnes
   générées, index.
-- `shared/store_types.json` — 7 métiers (supermarché, pharmacie, quincaillerie,
+- `shared/store_types.json`, 7 métiers (supermarché, pharmacie, quincaillerie,
   mode, électronique, restaurant, boutique générale) avec rayons, produits,
   fournisseurs, rôles, saisonnalité et structure de coûts. Ajouter un métier ici
   suffit à le faire apparaître dans les quatre écrans d'accueil.
-- `shared/theme.json` — jetons de design communs ; palette catégorielle validée
+- `shared/theme.json`, jetons de design communs ; palette catégorielle validée
   (bande de clarté, plancher de chroma, séparation daltonisme ΔE ≥ 8 sur paires
   adjacentes, plancher vision normale ΔE ≥ 15).
 
@@ -70,5 +70,5 @@ Angular), et `.github/workflows/ci.yml` le rejoue à chaque poussée.
 - **Pas d'authentification** : la plateforme génère des tableaux de bord, ce n'est
   pas un logiciel de caisse en production.
 - **SQLite** supporte plusieurs lecteurs et un écrivain (mode WAL). Pour un
-  déploiement multi-caisses, porter le schéma sur PostgreSQL — il est écrit en SQL
+  déploiement multi-caisses, porter le schéma sur PostgreSQL, il est écrit en SQL
   proche du standard.

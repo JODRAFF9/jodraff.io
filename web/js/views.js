@@ -13,7 +13,7 @@
     var sym = data.company.currency_sym, k = data.kpis;
     var html =
       UI.pageHead(Fmt.esc(data.company.logo_emoji) + '&nbsp; ' + Fmt.esc(data.company.name),
-        data.company.store_label + ' — ' + data.company.city + ', ' + data.company.country +
+        data.company.store_label + ', ' + data.company.city + ', ' + data.company.country +
         '. Toutes les cartes sont calculées en direct sur la base SQL centrale.') +
 
       '<div class="grid grid-kpi">' +
@@ -46,7 +46,7 @@
             (d.dept === 'CRM' ? Fmt.number(d.value) : money(d.value, sym)) + '</div></div>';
         }).join('') + '</div>',
         "Une écriture faite dans un département met immédiatement à jour les indicateurs " +
-        "des autres — c'est le rôle des triggers SQL.") + '</div>' +
+        "des autres, c'est le rôle des triggers SQL.") + '</div>' +
 
       '<div class="grid grid-3 mt">' +
         UI.card("Chiffre d'affaires quotidien", UI.chartSlot('c-daily'),
@@ -91,7 +91,7 @@
     var html =
       UI.pageHead('🧾&nbsp; Ventes',
         'Chaque ticket enregistré décharge le stock, alimente la fiche client et le ' +
-        'compte de résultat — sans aucune ressaisie.') +
+        'compte de résultat, sans aucune ressaisie.') +
       '<div class="grid grid-4">' +
         UI.kpi("Chiffre d'affaires", money(k.revenue, sym),
                UI.delta(k.revenue_delta) + ' sur ' + days + ' j', UI.deptColor('SALES')) +
@@ -109,7 +109,7 @@
       '</div>' +
       '<div class="grid grid-3 mt">' +
         UI.card('Ventes par heure', UI.chartSlot('c-s-hour'),
-                "Nombre de tickets — utile pour caler les plannings.", 'span-2') +
+                "Nombre de tickets, utile pour caler les plannings.", 'span-2') +
         UI.card('Canaux de vente', UI.chartSlot('c-s-chan'), '') +
       '</div>' +
       '<div class="grid grid-2 mt">' +
@@ -431,10 +431,10 @@
         "Le compte de résultat n'est pas ressaisi : ventes, coût des marchandises, " +
         'charges et paie remontent automatiquement des autres départements.') +
       '<div class="grid grid-4">' +
-        UI.kpi("CA — " + Fmt.period(last.period || ''), money(last.revenue, sym),
+        UI.kpi("CA, " + Fmt.period(last.period || ''), money(last.revenue, sym),
                'dernier mois clos', UI.deptColor('SALES')) +
         UI.kpi('Marge brute', money(margin, sym),
-               last.revenue ? 'taux ' + Fmt.percent(margin / last.revenue) : '—',
+               last.revenue ? 'taux ' + Fmt.percent(margin / last.revenue) : 'n.d.',
                UI.deptColor('FIN')) +
         UI.kpi('Charges + paie', money((last.expenses || 0) + (last.payroll || 0), sym),
                'structure et salaires', UI.deptColor('HR')) +

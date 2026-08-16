@@ -17,14 +17,14 @@ overview_ui <- function(id) {
     div(class = "mt", uiOutput(ns("departments"))),
     div(class = "grid grid-3 mt",
         erp_card("Chiffre d'affaires quotidien",
-                 plotlyOutput(ns("daily"), height = "280px"),
+                 plotly::plotlyOutput(ns("daily"), height = "280px"),
                  note = "Source : département Ventes. Survolez la courbe pour le détail.",
                  class = "span-2"),
-        erp_card("Répartition par rayon", plotlyOutput(ns("category"), height = "300px"),
+        erp_card("Répartition par rayon", plotly::plotlyOutput(ns("category"), height = "300px"),
                  note = "Chiffre d'affaires HT de la période.")),
     div(class = "grid grid-3 mt",
         erp_card("Chiffre d'affaires et marge par mois",
-                 plotlyOutput(ns("monthly"), height = "300px"),
+                 plotly::plotlyOutput(ns("monthly"), height = "300px"),
                  note = "Deux mesures de même unité, donc un seul axe de valeurs.",
                  class = "span-2"),
         erp_card("Dernières écritures", uiOutput(ns("feed")),
@@ -41,7 +41,7 @@ overview_server <- function(id, con, period) {
       info <- company()
       page_header(
         paste(info$logo_emoji, " ", info$name),
-        sprintf("%s — %s, %s. Toutes les cartes sont calculées en direct sur la base SQL centrale.",
+        sprintf("%s, %s, %s. Toutes les cartes sont calculées en direct sur la base SQL centrale.",
                 info$store_label, info$city, info$country))
     })
 
@@ -89,21 +89,21 @@ overview_server <- function(id, con, period) {
                   div(class = "v", value))
             })),
         note = paste("Une écriture faite dans un département met immédiatement à jour",
-                     "les indicateurs des autres — c'est le rôle des triggers SQL."))
+                     "les indicateurs des autres, c'est le rôle des triggers SQL."))
     })
 
-    output$daily <- renderPlotly({
+    output$daily <- plotly::renderPlotly({
       data <- q_sales_daily(con, max(period(), 30))
       chart_line(fr_day(data$sale_date), list("CA TTC" = data$revenue),
                  symbol(), height = 280, fill = TRUE)
     })
 
-    output$category <- renderPlotly({
+    output$category <- plotly::renderPlotly({
       data <- q_sales_by_category(con, period())
       chart_share(data$category, data$revenue, symbol(), height = 300)
     })
 
-    output$monthly <- renderPlotly({
+    output$monthly <- plotly::renderPlotly({
       data <- q_sales_monthly(con)
       chart_grouped(fr_period(data$period),
                     list("CA HT" = data$revenue_ht, "Marge brute" = data$gross_margin),
@@ -122,20 +122,20 @@ sales_ui <- function(id) {
   tagList(
     page_header("\U0001F9FE  Ventes",
       paste("Chaque ticket enregistré décharge le stock, alimente la fiche client",
-            "et le compte de résultat — sans aucune ressaisie.")),
+            "et le compte de résultat, sans aucune ressaisie.")),
     uiOutput(ns("kpis")),
     div(class = "grid grid-3 mt",
         erp_card("Chiffre d'affaires et tickets",
-                 plotlyOutput(ns("revenue"), height = "210px"),
-                 plotlyOutput(ns("tickets"), height = "150px"),
+                 plotly::plotlyOutput(ns("revenue"), height = "210px"),
+                 plotly::plotlyOutput(ns("tickets"), height = "150px"),
                  note = "Deux unités différentes : deux graphiques superposés, jamais un second axe Y.",
                  class = "span-2"),
-        erp_card("Modes de paiement", plotlyOutput(ns("payment"), height = "280px"))),
+        erp_card("Modes de paiement", plotly::plotlyOutput(ns("payment"), height = "280px"))),
     div(class = "grid grid-3 mt",
-        erp_card("Affluence par jour et par heure", plotlyOutput(ns("affluence"), height = "300px"),
+        erp_card("Affluence par jour et par heure", plotly::plotlyOutput(ns("affluence"), height = "300px"),
                  note = "Nombre de tickets. Utile pour caler les plannings d'équipe.",
                  class = "span-2"),
-        erp_card("Canaux de vente", plotlyOutput(ns("channel"), height = "260px"))),
+        erp_card("Canaux de vente", plotly::plotlyOutput(ns("channel"), height = "260px"))),
     div(class = "grid grid-2 mt",
         erp_card("Top 10 des produits", DT::DTOutput(ns("top")),
                  note = "Classement par chiffre d'affaires hors taxes."),
@@ -167,24 +167,24 @@ sales_server <- function(id, con, period) {
 
     daily <- reactive(q_sales_daily(con, period()))
 
-    output$revenue <- renderPlotly({
+    output$revenue <- plotly::renderPlotly({
       data <- daily()
       chart_line(fr_day(data$sale_date), list("CA TTC" = data$revenue),
                  symbol(), height = 210, fill = TRUE)
     })
-    output$tickets <- renderPlotly({
+    output$tickets <- plotly::renderPlotly({
       data <- daily()
       chart_line(fr_day(data$sale_date), list("Tickets" = data$tickets), height = 150)
     })
-    output$payment <- renderPlotly({
+    output$payment <- plotly::renderPlotly({
       data <- q_sales_dimension(con, "payment", period())
       chart_share(data$label, data$revenue, symbol(), height = 280)
     })
-    output$channel <- renderPlotly({
+    output$channel <- plotly::renderPlotly({
       data <- q_sales_dimension(con, "channel", period())
       chart_share(data$label, data$revenue, symbol(), height = 260)
     })
-    output$affluence <- renderPlotly({
+    output$affluence <- plotly::renderPlotly({
       data <- q_affluence(con, period())
       if (nrow(data) == 0) return(chart_empty("Aucune vente sur la période."))
       hours <- sort(unique(data$hour))
@@ -240,10 +240,10 @@ stock_ui <- function(id) {
             "réceptions fournisseurs et des écritures d'inventaire.")),
     uiOutput(ns("kpis")),
     div(class = "grid grid-3 mt",
-        erp_card("Valorisation par rayon", plotlyOutput(ns("valuation"), height = "320px"),
+        erp_card("Valorisation par rayon", plotly::plotlyOutput(ns("valuation"), height = "320px"),
                  note = "L'écart entre les deux points est la marge immobilisée dans le rayon.",
                  class = "span-2"),
-        erp_card("Répartition de la valeur", plotlyOutput(ns("share"), height = "300px"))),
+        erp_card("Répartition de la valeur", plotly::plotlyOutput(ns("share"), height = "300px"))),
     div(class = "grid grid-2 mt",
         erp_card("Alertes de réapprovisionnement", DT::DTOutput(ns("alerts")),
                  note = "Vue SQL v_stock_alerts, reprise telle quelle par le département Achats."),
@@ -280,12 +280,12 @@ stock_server <- function(id, con, period) {
                  "▲ sous le point de commande", STATUS$serious))
     })
 
-    output$valuation <- renderPlotly({
+    output$valuation <- plotly::renderPlotly({
       data <- valuation()
       chart_dumbbell(data$category, data$value, data$retail_value,
                      "Prix de revient", "Prix de vente", symbol(), height = 320)
     })
-    output$share <- renderPlotly({
+    output$share <- plotly::renderPlotly({
       data <- valuation()
       chart_share(data$category, data$value, symbol(), height = 300)
     })
@@ -331,10 +331,10 @@ purchasing_ui <- function(id) {
             "et des ventes, puis groupé par fournisseur.")),
     uiOutput(ns("kpis")),
     div(class = "grid grid-3 mt",
-        erp_card("Achats par mois", plotlyOutput(ns("monthly"), height = "280px"),
+        erp_card("Achats par mois", plotly::plotlyOutput(ns("monthly"), height = "280px"),
                  note = "Montant des commandes fournisseurs, hors commandes annulées.",
                  class = "span-2"),
-        erp_card("Dépense par fournisseur", plotlyOutput(ns("suppliers"), height = "300px"))),
+        erp_card("Dépense par fournisseur", plotly::plotlyOutput(ns("suppliers"), height = "300px"))),
     div(class = "grid grid-2 mt",
         erp_card("Plan de réapprovisionnement", DT::DTOutput(ns("plan")),
                  note = "Une commande par fournisseur, prête à être passée."),
@@ -371,12 +371,12 @@ purchasing_server <- function(id, con, period) {
                  dept_color("SALES")))
     })
 
-    output$monthly <- renderPlotly({
+    output$monthly <- plotly::renderPlotly({
       data <- q_purchases_monthly(con)
       chart_bars(fr_period(data$period), data$amount, symbol(), height = 280,
                  color = dept_color("PURCH"))
     })
-    output$suppliers <- renderPlotly({
+    output$suppliers <- plotly::renderPlotly({
       data <- head(q_suppliers(con), 6)
       chart_share(data$name, data$spend, symbol(), height = 300)
     })
@@ -415,11 +415,11 @@ crm_ui <- function(id) {
             "son historique, sa valeur et ses points de fidélité.")),
     uiOutput(ns("kpis")),
     div(class = "grid grid-3 mt",
-        erp_card("Chiffre d'affaires par segment", plotlyOutput(ns("segments"), height = "300px"),
+        erp_card("Chiffre d'affaires par segment", plotly::plotlyOutput(ns("segments"), height = "300px"),
                  note = "Un professionnel pèse plusieurs fois un particulier."),
         erp_card("Poids des segments", DT::DTOutput(ns("segment_table")),
                  note = "La vue table du graphique ci-contre."),
-        erp_card("Nouveaux clients par mois", plotlyOutput(ns("acquisition"), height = "260px"),
+        erp_card("Nouveaux clients par mois", plotly::plotlyOutput(ns("acquisition"), height = "260px"),
                  note = "Date de première inscription au fichier.")),
     div(class = "grid grid-3 mt",
         erp_card("Meilleurs clients", DT::DTOutput(ns("customers")),
@@ -450,11 +450,11 @@ crm_server <- function(id, con, period) {
                  "sans achat depuis 45 jours", STATUS$serious))
     })
 
-    output$segments <- renderPlotly({
+    output$segments <- plotly::renderPlotly({
       data <- q_segments(con)
       chart_share(data$segment, data$revenue, symbol(), height = 300)
     })
-    output$acquisition <- renderPlotly({
+    output$acquisition <- plotly::renderPlotly({
       data <- tail(q_acquisition(con), 12)
       chart_bars(fr_period(data$period), data$customers, height = 260,
                  color = dept_color("CRM"))
@@ -492,10 +492,10 @@ hr_ui <- function(id) {
             "et au calcul de la performance commerciale.")),
     uiOutput(ns("kpis")),
     div(class = "grid grid-3 mt",
-        erp_card("Masse salariale versée par mois", plotlyOutput(ns("payroll"), height = "290px"),
+        erp_card("Masse salariale versée par mois", plotly::plotlyOutput(ns("payroll"), height = "290px"),
                  note = "Segments empilés séparés par 2 px : les parts restent lisibles.",
                  class = "span-2"),
-        erp_card("Effectif par service", plotlyOutput(ns("headcount"), height = "280px"))),
+        erp_card("Effectif par service", plotly::plotlyOutput(ns("headcount"), height = "280px"))),
     div(class = "grid grid-3 mt",
         erp_card("Coût par service", DT::DTOutput(ns("departments")),
                  note = "La vue table du graphique ci-dessus."),
@@ -526,20 +526,20 @@ hr_server <- function(id, con, period) {
                  "par mois, salaires bruts", dept_color("FIN")),
         kpi_tile("Poids sur le CA",
                  if (revenue_month > 0) sprintf("%s %%", fr_num(payroll / revenue_month * 100, 1))
-                 else "—",
+                 else "n.d.",
                  "masse salariale / CA du mois", dept_color("SALES")),
         kpi_tile("CA par vendeur",
                  fmt_compact(if (nrow(sellers)) sum(sellers$revenue) / nrow(sellers) else 0, sym),
                  sprintf("%d salariés encaissent", nrow(sellers)), dept_color("CRM")))
     })
 
-    output$payroll <- renderPlotly({
+    output$payroll <- plotly::renderPlotly({
       data <- q_payroll(con)
       chart_grouped(fr_period(data$period),
                     list("Salaires nets" = data$net, "Primes" = data$bonus),
                     symbol(), height = 290, stacked = TRUE)
     })
-    output$headcount <- renderPlotly({
+    output$headcount <- plotly::renderPlotly({
       data <- q_headcount(con)
       chart_share(data$department, data$headcount, "", height = 280)
     })
@@ -572,10 +572,10 @@ finance_ui <- function(id) {
     uiOutput(ns("kpis")),
     div(class = "grid grid-3 mt",
         erp_card("Chiffre d'affaires, coût des marchandises et charges",
-                 plotlyOutput(ns("monthly"), height = "310px"),
+                 plotly::plotlyOutput(ns("monthly"), height = "310px"),
                  note = "Trois mesures dans la même unité, donc un seul axe de valeurs.",
                  class = "span-2"),
-        erp_card("Charges par nature", plotlyOutput(ns("categories"), height = "300px"),
+        erp_card("Charges par nature", plotly::plotlyOutput(ns("categories"), height = "300px"),
                  note = "Sur douze mois glissants.")),
     div(class = "grid grid-2 mt",
         erp_card("Compte de résultat mensuel", DT::DTOutput(ns("statement")),
@@ -597,11 +597,11 @@ finance_server <- function(id, con, period) {
       last <- closed[nrow(closed), ]
       margin <- last$revenue - last$cogs
       div(class = "grid grid-4",
-        kpi_tile(paste("CA —", fr_period(last$period)), fmt_compact(last$revenue, sym),
+        kpi_tile(paste("CA", fr_period(last$period)), fmt_compact(last$revenue, sym),
                  "dernier mois clos", dept_color("SALES")),
         kpi_tile("Marge brute", fmt_compact(margin, sym),
                  if (last$revenue > 0) sprintf("taux %s %%", fr_num(margin / last$revenue * 100, 1))
-                 else "—", dept_color("FIN")),
+                 else "n.d.", dept_color("FIN")),
         kpi_tile("Charges + paie", fmt_compact(last$expenses + last$payroll, sym),
                  "structure et salaires", dept_color("HR")),
         kpi_tile("Résultat net", fmt_compact(last$net_result, sym),
@@ -609,14 +609,14 @@ finance_server <- function(id, con, period) {
                  if (last$net_result >= 0) STATUS$good else STATUS$critical))
     })
 
-    output$monthly <- renderPlotly({
+    output$monthly <- plotly::renderPlotly({
       data <- monthly()
       chart_grouped(fr_period(data$period), list(
         "Chiffre d'affaires" = data$revenue,
         "Coût des marchandises" = data$cogs,
         "Charges + paie" = data$expenses + data$payroll), symbol(), height = 310)
     })
-    output$categories <- renderPlotly({
+    output$categories <- plotly::renderPlotly({
       data <- q_expenses_by(con, "category")
       chart_share(data$label, data$amount, symbol(), height = 300)
     })

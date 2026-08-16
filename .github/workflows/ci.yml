@@ -2,8 +2,8 @@
 #  Pipeline d'intégration continue.
 #
 #  Objectif : installer les dépendances des quatre piles, puis vérifier
-#  que la chaîne complète tient — schéma SQL, générateur, requêtes, API,
-#  dashboard R et fronts web — à chaque poussée.
+#  que la chaîne complète tient, schéma SQL, générateur, requêtes, API,
+#  dashboard R et fronts web, à chaque poussée.
 #
 #  Les trois travaux sont indépendants : un échec côté Angular n'empêche
 #  pas de voir le résultat des tests Python ou R.

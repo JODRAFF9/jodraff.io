@@ -1,4 +1,4 @@
-"""Département Ventes — encaissements, panier, canaux, performance vendeurs."""
+"""Département Ventes, encaissements, panier, canaux, performance vendeurs."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ def layout(db, days: int = 30) -> html.Div:
     return html.Div([
         page_header("🧾  Ventes",
                     "Chaque ticket enregistré décharge le stock, alimente la fiche client "
-                    "et le compte de résultat — sans aucune ressaisie."),
+                    "et le compte de résultat, sans aucune ressaisie."),
 
         html.Div([
             kpi_tile("Chiffre d'affaires", compact_money(k["revenue"], sym),
@@ -123,7 +123,7 @@ def layout(db, days: int = 30) -> html.Div:
 
 
 def _affluence(db, days: int):
-    """Carte de chaleur jour × heure — magnitude, donc rampe mono-teinte."""
+    """Carte de chaleur jour × heure, magnitude, donc rampe mono-teinte."""
     rows = db.query(
         """SELECT CAST(strftime('%w', sale_date) AS INTEGER) AS wd,
                   CAST(substr(sold_at, 12, 2) AS INTEGER)    AS hour,

@@ -19,10 +19,10 @@ import { UI_COMPONENTS } from '../shared/ui.components';
                   charges et paie remontent automatiquement des autres départements." />
 
       <div class="grid grid-4">
-        <erp-kpi [label]="'CA — ' + periodOf(last())" [value]="fmt(last().revenue)"
+        <erp-kpi [label]="'CA, ' + periodOf(last())" [value]="fmt(last().revenue)"
                  [accent]="c('SALES')">dernier mois clos</erp-kpi>
         <erp-kpi label="Marge brute" [value]="fmt(margin())" [accent]="c('FIN')">
-          {{ last().revenue ? 'taux ' + pct(margin() / last().revenue) : '—' }}
+          {{ last().revenue ? 'taux ' + pct(margin() / last().revenue) : 'n.d.' }}
         </erp-kpi>
         <erp-kpi label="Charges + paie" [value]="fmt(last().expenses + last().payroll)"
                  [accent]="c('HR')">structure et salaires</erp-kpi>

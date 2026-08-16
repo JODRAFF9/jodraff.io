@@ -1,4 +1,4 @@
-"""Département Achats — fournisseurs, commandes, plan de réapprovisionnement."""
+"""Département Achats, fournisseurs, commandes, plan de réapprovisionnement."""
 
 from __future__ import annotations
 

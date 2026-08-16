@@ -81,11 +81,11 @@ q_activity <- function(con, limit = 12) {
         SELECT ordered_on || ' 09:00:00', 'PURCH', 'Commande ' || ref, total FROM purchases
         UNION ALL
         SELECT moved_at, 'STOCK',
-               move_type || ' — ' || (SELECT name FROM products WHERE id = product_id),
+               move_type || ', ' || (SELECT name FROM products WHERE id = product_id),
                quantity
           FROM stock_moves WHERE move_type IN ('perte', 'inventaire', 'retour')
         UNION ALL
-        SELECT spent_on || ' 12:00:00', 'FIN', 'Charge — ' || label, amount FROM expenses
+        SELECT spent_on || ' 12:00:00', 'FIN', 'Charge, ' || label, amount FROM expenses
      ) ORDER BY at DESC LIMIT %d", limit))
 }
 

@@ -8,7 +8,7 @@ import {
   StoreTypesResponse,
 } from './models';
 
-/** URL de l'API REST — surchargeable par ?api=... pour un déploiement distinct. */
+/** URL de l'API REST, surchargeable par ?api=... pour un déploiement distinct. */
 export const API_BASE = (() => {
   const override = new URLSearchParams(location.search).get('api');
   return (override ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
@@ -28,7 +28,7 @@ interface CreateResult {
  */
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  /** Entreprise courante — signal partagé par toute l'application. */
+  /** Entreprise courante, signal partagé par toute l'application. */
   readonly company = signal<Company | null>(null);
   /** Période analysée, en jours (barre supérieure). */
   readonly days = signal<number>(30);

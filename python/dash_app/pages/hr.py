@@ -1,4 +1,4 @@
-"""Département Ressources humaines — effectif, masse salariale, paie, performance."""
+"""Département Ressources humaines, effectif, masse salariale, paie, performance."""
 
 from __future__ import annotations
 

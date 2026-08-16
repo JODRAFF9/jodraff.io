@@ -8,18 +8,18 @@ const MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
                 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
 
 export function num(value: number | null | undefined, decimals = 0): string {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+  if (value === null || value === undefined || Number.isNaN(value)) return 'n.d.';
   return value.toFixed(decimals).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
 export function money(value: number | null | undefined, symbol: string, decimals = 0): string {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+  if (value === null || value === undefined || Number.isNaN(value)) return 'n.d.';
   return `${num(value, decimals)} ${symbol}`;
 }
 
 /** Format compact des tuiles et des axes : « 1,2 M FCFA ». */
 export function compact(value: number | null | undefined, symbol = ''): string {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+  if (value === null || value === undefined || Number.isNaN(value)) return 'n.d.';
   const abs = Math.abs(value);
   const sign = value < 0 ? '-' : '';
   const suffix = symbol ? ` ${symbol}` : '';
@@ -42,7 +42,7 @@ export function axisTick(value: number): string {
 }
 
 export function percent(value: number | null | undefined, decimals = 1): string {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+  if (value === null || value === undefined || Number.isNaN(value)) return 'n.d.';
   return `${num(value * 100, decimals)} %`;
 }
 
@@ -91,7 +91,7 @@ export const STOCK_STATUS: Record<string, { cls: string; icon: string; label: st
 export function deltaParts(pct: number | null | undefined):
     { cls: string; arrow: string; text: string } {
   if (pct === null || pct === undefined) {
-    return { cls: 'flat', arrow: '—', text: 'nouvelle période' };
+    return { cls: 'flat', arrow: 'n.d.', text: 'nouvelle période' };
   }
   const flat = Math.abs(pct) < 0.05;
   return {

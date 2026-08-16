@@ -1,5 +1,5 @@
 {
-  "name": "ERP Boutique — système visuel",
+  "name": "ERP Boutique, système visuel",
   "note": "Jetons de design partagés par le dashboard R Shiny, le dashboard Python/Dash, le front web et l'application Angular. Palette catégorielle validée (bande de clarté, plancher de chroma, séparation daltonisme ΔE ≥ 8 sur paires adjacentes, plancher vision normale ΔE ≥ 15). Les couleurs sont assignées dans un ORDRE FIXE, jamais recyclé : une série garde sa couleur même si un filtre change le nombre de séries.",
   "categorical": {
     "light": ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"],
@@ -24,7 +24,7 @@
     "warning": "#fab219",
     "serious": "#ec835a",
     "critical": "#d03b3b",
-    "note": "Réservé aux états (rupture, alerte, OK). Jamais réutilisé comme couleur de série, et toujours accompagné d'une icône + d'un libellé — la couleur ne porte jamais l'information seule."
+    "note": "Réservé aux états (rupture, alerte, OK). Jamais réutilisé comme couleur de série, et toujours accompagné d'une icône + d'un libellé, la couleur ne porte jamais l'information seule."
   },
   "surface": {
     "light": {

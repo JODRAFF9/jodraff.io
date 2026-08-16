@@ -1,4 +1,4 @@
-"""Département Clients — segments, valeur vie client, fidélité, clients dormants."""
+"""Département Clients, segments, valeur vie client, fidélité, clients dormants."""
 
 from __future__ import annotations
 

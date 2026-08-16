@@ -108,7 +108,7 @@ def get_currency(code: str) -> dict[str, Any]:
 def format_money(amount: float, symbol: str = "FCFA", decimals: int = 0) -> str:
     """Formatage monétaire lisible (espace fine comme séparateur de milliers)."""
     if amount is None:
-        return "—"
+        return "n.d."
     formatted = f"{amount:,.{decimals}f}".replace(",", " ").replace(".", ",")
     if decimals == 0:
         formatted = formatted.split(",")[0]
@@ -118,7 +118,7 @@ def format_money(amount: float, symbol: str = "FCFA", decimals: int = 0) -> str:
 def compact_money(amount: float, symbol: str = "FCFA") -> str:
     """Formatage compact pour les grandes valeurs (1,2 M FCFA)."""
     if amount is None:
-        return "—"
+        return "n.d."
     a = abs(amount)
     sign = "-" if amount < 0 else ""
     if a >= 1_000_000_000:

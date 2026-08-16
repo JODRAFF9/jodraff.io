@@ -28,7 +28,7 @@ from erp.generator import create_company, reset_database  # noqa: E402
 from erp.theme import load_theme  # noqa: E402
 
 app = FastAPI(
-    title="ERP Boutique — API",
+    title="ERP Boutique, API",
     version="1.0.0",
     description=(
         "API de la plateforme de gestion de boutique. Toutes les routes lisent "
@@ -127,7 +127,7 @@ def store_types() -> dict:
 
 @app.get("/api/theme", tags=["Plateforme"])
 def theme() -> dict:
-    """Jetons de design partagés — les fronts n'inventent aucune couleur."""
+    """Jetons de design partagés, les fronts n'inventent aucune couleur."""
     return load_theme()
 
 

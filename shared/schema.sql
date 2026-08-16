@@ -1,5 +1,5 @@
 -- =====================================================================
---  ERP Boutique — Schéma SQL central
+--  ERP Boutique, Schéma SQL central
 --  ---------------------------------------------------------------
 --  Source unique de vérité partagée par TOUS les clients :
 --    - le dashboard R Shiny      (shiny/)
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS company (
 );
 
 -- ---------------------------------------------------------------------
--- 2. Départements — l'axe de centralisation des données
+-- 2. Départements, l'axe de centralisation des données
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS departments (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS purchase_items (
 );
 
 -- ---------------------------------------------------------------------
--- 6. Stock (département STOCK) — journal de tous les mouvements
+-- 6. Stock (département STOCK), journal de tous les mouvements
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS stock_moves (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -240,7 +240,7 @@ CREATE INDEX IF NOT EXISTS idx_purch_items_pur  ON purchase_items(purchase_id);
 CREATE INDEX IF NOT EXISTS idx_expenses_date    ON expenses(spent_on);
 
 -- =====================================================================
--- 10. TRIGGERS — la centralisation en action
+-- 10. TRIGGERS, la centralisation en action
 -- =====================================================================
 
 -- 10.1 Une ligne de vente sort du stock et alimente le total de la vente
@@ -324,7 +324,7 @@ BEGIN
 END;
 
 -- =====================================================================
--- 11. VUES — lecture consolidée, identique pour R, Python, l'API et le web
+-- 11. VUES, lecture consolidée, identique pour R, Python, l'API et le web
 -- =====================================================================
 
 -- 11.1 Catalogue enrichi
@@ -439,7 +439,7 @@ SELECT m.period,
 FROM months m
 ORDER BY m.period;
 
--- 11.9 Tableau de bord par département — la vue « données centrées »
+-- 11.9 Tableau de bord par département, la vue « données centrées »
 CREATE VIEW IF NOT EXISTS v_department_dashboard AS
 SELECT 'SALES' AS dept, 'Ventes'  AS name, 'Chiffre d''affaires (30 j)' AS metric,
        ROUND(COALESCE((SELECT SUM(total) FROM sales

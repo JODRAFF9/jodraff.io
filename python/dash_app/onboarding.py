@@ -2,7 +2,7 @@
 
 C'est le point d'entrée décrit dans le cahier des charges : l'utilisateur
 indique **le type de boutique** et **son nom**, et l'ERP complet est créé.
-Rien d'autre n'est demandé — devise, ville et profondeur d'historique ont
+Rien d'autre n'est demandé, devise, ville et profondeur d'historique ont
 des valeurs par défaut raisonnables.
 """
 
@@ -21,8 +21,8 @@ def layout(message: html.Div | None = None) -> html.Div:
             html.H1("Créez le tableau de bord de votre boutique"),
             html.P(
                 "Dites simplement quel commerce vous exploitez et comment il s'appelle. "
-                "La plateforme génère un ERP complet — ventes, stock, achats, clients, "
-                "ressources humaines et finance — avec un historique d'activité déjà "
+                "La plateforme génère un ERP complet, ventes, stock, achats, clients, "
+                "ressources humaines et finance, avec un historique d'activité déjà "
                 "consolidé dans une base SQL unique.",
                 className="lead"),
 
@@ -131,7 +131,7 @@ def _departments_note() -> html.Div:
         html.Span("ℹ️"),
         html.Div([
             html.B("Les six départements sont livrés d'office "),
-            html.Span(" — ".join(f"{d['icon']} {d['name']}" for d in DEPARTMENTS[1:])),
+            html.Span(", ".join(f"{d['icon']} {d['name']}" for d in DEPARTMENTS[1:])),
             html.Div("Ils partagent une seule base de données : une vente décharge le "
                      "stock, met à jour la fiche client et le compte de résultat "
                      "au même instant.",
@@ -159,7 +159,7 @@ def success_panel(summary: dict, symbol: str) -> html.Div:
             html.Span("✅"),
             html.Div([
                 html.B(f"« {summary['company']} » est prête."),
-                html.Div(f"{summary['store_label']} — historique du "
+                html.Div(f"{summary['store_label']}, historique du "
                          f"{summary['period_start']} au {summary['period_end']}.",
                          style={"marginTop": "3px", "opacity": .85}),
             ]),

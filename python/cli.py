@@ -88,7 +88,7 @@ def cmd_stats(_args: argparse.Namespace) -> int:
         return 1
     sym = company["currency_sym"]
     k = q.kpis(30)
-    print(f"\n  {company['logo_emoji']}  {company['name']} — {company['store_label']}")
+    print(f"\n  {company['logo_emoji']}  {company['name']}, {company['store_label']}")
     print("  " + "─" * 60)
     print(f"  CA (30 j)          {compact_money(k['revenue'], sym)}"
           f"   ({k['tickets']} tickets)")
@@ -115,7 +115,7 @@ def cmd_reset(_args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="cli.py", description="Plateforme ERP Boutique — outil en ligne de commande.")
+        prog="cli.py", description="Plateforme ERP Boutique, outil en ligne de commande.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("types", help="lister les types de boutiques").set_defaults(func=cmd_types)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests du pipeline — de l'onboarding aux vues consolidées.
+"""Tests du pipeline, de l'onboarding aux vues consolidées.
 
 Objectif : vérifier que la chaîne complète tient, étape par étape.
 
@@ -46,7 +46,7 @@ def fresh_db(tmp: Path, name: str) -> Database:
     """Base neuve et isolée : un fichier distinct par appel.
 
     Réutiliser un nom de fichier ferait travailler deux tests sur la même
-    base — et invaliderait silencieusement les comparaisons entre bases.
+    base, et invaliderait silencieusement les comparaisons entre bases.
     """
     return Database(tmp / f"{name}-{next(_compteur)}.db")
 
@@ -62,7 +62,7 @@ def stock_of(db: Database, product_id: int) -> float:
 
 
 # ==========================================================================
-# 1. Schéma et triggers — la centralisation des départements
+# 1. Schéma et triggers, la centralisation des départements
 # ==========================================================================
 def test_schema_applique_tables_triggers_et_vues(tmp: Path) -> None:
     """Le schéma partagé crée bien tout l'appareillage SQL."""
@@ -177,7 +177,7 @@ def test_type_de_mouvement_invalide_est_refuse(tmp: Path) -> None:
 
 
 # ==========================================================================
-# 2. Générateur — un métier, une entreprise cohérente
+# 2. Générateur, un métier, une entreprise cohérente
 # ==========================================================================
 def test_tous_les_metiers_se_generent(tmp: Path) -> None:
     """Les 7 métiers du catalogue produisent une base exploitable."""
@@ -220,8 +220,7 @@ def test_invariants_comptables_et_de_stock(tmp: Path) -> None:
 def test_stock_final_positif_et_valorise(tmp: Path) -> None:
     """Régression : le réapprovisionnement doit laisser un stock crédible.
 
-    Un stock global négatif signifie que l'acheteur simulé sous-commande —
-    c'est le défaut qu'avait la boucle mensuelle de la version R.
+    Un stock global négatif signifie que l'acheteur simulé sous-commande, c'est le défaut qu'avait la boucle mensuelle de la version R.
     """
     for store_type in STORE_TYPES:
         db = make_company(tmp, store_type)
@@ -277,7 +276,7 @@ def test_nom_vide_refuse(tmp: Path) -> None:
 
 
 # ==========================================================================
-# 3. Requêtes métier — les six départements répondent
+# 3. Requêtes métier, les six départements répondent
 # ==========================================================================
 def test_toutes_les_requetes_repondent(tmp: Path) -> None:
     """Chaque fonction de queries.py s'exécute sur une base réelle."""
@@ -342,7 +341,7 @@ def test_compte_de_resultat_coherent(tmp: Path) -> None:
 
 
 # ==========================================================================
-# 4. API REST — le contrat des fronts web
+# 4. API REST, le contrat des fronts web
 # ==========================================================================
 def test_api_repond_sur_toutes_les_routes(tmp: Path) -> None:
     """L'API sert les mêmes chiffres que les requêtes internes."""
@@ -407,7 +406,7 @@ def test_api_repond_sur_toutes_les_routes(tmp: Path) -> None:
 
 
 # ==========================================================================
-# 5. Ressources partagées — le contrat entre les interfaces
+# 5. Ressources partagées, le contrat entre les interfaces
 # ==========================================================================
 def test_catalogue_des_metiers_complet(tmp: Path) -> None:
     """Chaque métier doit fournir tout ce dont le générateur a besoin."""
@@ -449,7 +448,7 @@ def main() -> int:
     tests = [(nom, objet) for nom, objet in sorted(globals().items())
              if nom.startswith("test_") and callable(objet)]
     echecs = []
-    print(f"\n  Pipeline ERP — {len(tests)} tests\n  " + "─" * 62)
+    print(f"\n  Pipeline ERP, {len(tests)} tests\n  " + "─" * 62)
 
     with tempfile.TemporaryDirectory() as dossier:
         tmp = Path(dossier)

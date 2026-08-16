@@ -1,7 +1,7 @@
 """Constructeurs de graphiques.
 
 Règles appliquées systématiquement :
-  * un seul axe de valeurs — jamais deux échelles Y sur un même graphique ;
+  * un seul axe de valeurs, jamais deux échelles Y sur un même graphique ;
   * marques fines, extrémités arrondies, écart de 2 px entre segments empilés ;
   * légende dès 2 séries, étiquettes directes sélectives (jamais toutes) ;
   * grille discrète, axes en encre atténuée ;
@@ -27,7 +27,7 @@ def _fmt_axis(fig: go.Figure, symbol: str | None) -> None:
 
 
 def fr_period(period: str) -> str:
-    """'2026-02' -> 'févr. 2026' — et force l'axe en catégories, pas en dates."""
+    """'2026-02' -> 'févr. 2026', et force l'axe en catégories, pas en dates."""
     mois = ["janv.", "févr.", "mars", "avr.", "mai", "juin",
             "juil.", "août", "sept.", "oct.", "nov.", "déc."]
     try:

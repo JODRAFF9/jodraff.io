@@ -8,7 +8,7 @@ import { Currency, StoreType } from '../core/models';
 /**
  * Écran de démarrage : type de boutique + nom, et l'ERP est créé.
  * C'est exactement le même parcours que dans le dashboard Python et le
- * front HTML/CSS/JS — l'API fait le travail dans les trois cas.
+ * front HTML/CSS/JS, l'API fait le travail dans les trois cas.
  */
 @Component({
   selector: 'erp-onboarding',
@@ -21,8 +21,7 @@ import { Currency, StoreType } from '../core/models';
         <h1>Créez le tableau de bord de votre boutique</h1>
         <p class="lead">
           Indiquez le type de commerce que vous exploitez et son nom. La plateforme génère
-          un ERP complet — ventes, stock, achats, clients, ressources humaines et finance —
-          dans une base SQL unique, avec un historique d'activité déjà consolidé.
+          un ERP complet, ventes, stock, achats, clients, ressources humaines et finance, dans une base SQL unique, avec un historique d'activité déjà consolidé.
         </p>
 
         <h2 class="step-label"><span class="step-num">1</span> Quel type de boutique ?</h2>

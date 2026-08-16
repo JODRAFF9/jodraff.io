@@ -1,4 +1,4 @@
-"""Une page par département — toutes lisent la même base SQL centrale."""
+"""Une page par département, toutes lisent la même base SQL centrale."""
 
 from . import crm, finance, hr, overview, purchasing, sales, stock
 

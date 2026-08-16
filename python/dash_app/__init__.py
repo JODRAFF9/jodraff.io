@@ -1,4 +1,4 @@
-"""Dashboard ERP — plateforme Python (Plotly Dash).
+"""Dashboard ERP, plateforme Python (Plotly Dash).
 
     app.py         coquille, routage et onboarding
     pages/         une page par département

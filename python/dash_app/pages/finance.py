@@ -1,4 +1,4 @@
-"""Département Finance — compte de résultat, charges, passage CA -> résultat."""
+"""Département Finance, compte de résultat, charges, passage CA -> résultat."""
 
 from __future__ import annotations
 
@@ -36,10 +36,10 @@ def layout(db, days: int = 30) -> html.Div:
                     "charges et paie remontent automatiquement des autres départements."),
 
         html.Div([
-            kpi_tile(f"Chiffre d'affaires — {last.get('period', '—')}",
+            kpi_tile(f"Chiffre d'affaires, {last.get('period', 'n.d.')}",
                      compact_money(revenue, sym), ["dernier mois clos"], DEPT_COLOR["SALES"]),
             kpi_tile("Marge brute", compact_money(margin, sym),
-                     [f"taux {margin / revenue * 100:.1f} %" if revenue else "—"],
+                     [f"taux {margin / revenue * 100:.1f} %" if revenue else "n.d."],
                      DEPT_COLOR["FIN"]),
             kpi_tile("Charges + paie",
                      compact_money((last.get("expenses", 0) or 0) + (last.get("payroll", 0) or 0), sym),
