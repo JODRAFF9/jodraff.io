@@ -21,6 +21,16 @@ Elles affichent ce que la base calcule.
 `shared/schema.sql`, un seul fichier, appliqué à l'identique par toutes les
 interfaces (`CREATE ... IF NOT EXISTS`, donc rejouable sans risque).
 
+Ce caractère « créer seulement si absent » a une contrepartie : le fichier
+crée une base neuve, mais il ne modifie **pas** une base déjà remplie. Une base
+ouverte par une version antérieure garderait donc ses anciennes colonnes, et la
+première écriture échouerait sur `table company has no column named ...`.
+C'est le rôle de `shared/migrations.json` : il décrit, en un seul endroit lu par
+les quatre interfaces, les colonnes renommées ou ajoutées depuis. Chaque
+opération n'agit que si l'ancien état est réellement présent, donc la mise à
+niveau est rejouable, et elle est déclenchée à chaque ouverture de connexion
+(`erp.database.apply_migrations` côté Python, `db_apply_migrations` côté R).
+
 ### Tables
 
 | Domaine | Tables |

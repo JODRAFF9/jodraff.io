@@ -22,6 +22,7 @@ PROJECT_ROOT = PACKAGE_DIR.parent.parent
 SHARED_DIR = Path(os.environ.get("ERP_SHARED_DIR", PROJECT_ROOT / "shared"))
 CATALOG_PATH = SHARED_DIR / "store_types.json"
 SCHEMA_PATH = SHARED_DIR / "schema.sql"
+MIGRATIONS_PATH = SHARED_DIR / "migrations.json"
 
 
 @lru_cache(maxsize=1)

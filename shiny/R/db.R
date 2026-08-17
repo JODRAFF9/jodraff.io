@@ -18,7 +18,7 @@ db_connect <- function(path = DB_PATH) {
   con
 }
 
-#' Applique shared/schema.sql (idempotent : tout est CREATE IF NOT EXISTS).
+#' Applique shared/schema.sql puis les migrations des bases existantes.
 db_init_schema <- function(con) {
   sql <- paste(readLines(SCHEMA_PATH, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
   # Découpe en instructions : les triggers contiennent des « ; » internes,
@@ -29,7 +29,52 @@ db_init_schema <- function(con) {
     if (nchar(trimmed) == 0) next
     try(DBI::dbExecute(con, trimmed), silent = TRUE)
   }
+  db_apply_migrations(con)
   invisible(TRUE)
+}
+
+#' Colonnes d'une table ; vecteur vide si la table n'existe pas.
+db_columns <- function(con, table) {
+  info <- try(DBI::dbGetQuery(con, sprintf("PRAGMA table_info(%s)", table)), silent = TRUE)
+  if (inherits(info, "try-error") || nrow(info) == 0) return(character(0))
+  info$name
+}
+
+#' Met à niveau une base déjà remplie, d'après shared/migrations.json.
+#'
+#' schema.sql ne contient que des CREATE ... IF NOT EXISTS : il crée une base
+#' neuve mais laisse intacte une base existante. Sans cette étape, une base
+#' créée par une version antérieure garderait ses anciennes colonnes et les
+#' écritures échoueraient (« table company has no column named ... »).
+#' Chaque opération n'agit que si l'ancien état est présent : rejouable sans
+#' risque.
+db_apply_migrations <- function(con) {
+  if (!file.exists(MIGRATIONS_PATH)) return(invisible(character(0)))
+  plan <- jsonlite::fromJSON(MIGRATIONS_PATH, simplifyDataFrame = FALSE)
+  appliquees <- character(0)
+
+  for (regle in plan$colonnes_renommees %||% list()) {
+    colonnes <- db_columns(con, regle$table)
+    if (regle$de %in% colonnes && !(regle$vers %in% colonnes)) {
+      DBI::dbExecute(con, sprintf('ALTER TABLE "%s" RENAME COLUMN "%s" TO "%s"',
+                                  regle$table, regle$de, regle$vers))
+      appliquees <- c(appliquees, sprintf("%s.%s -> %s", regle$table, regle$de, regle$vers))
+    }
+  }
+
+  for (regle in plan$colonnes_ajoutees %||% list()) {
+    colonnes <- db_columns(con, regle$table)
+    if (length(colonnes) > 0 && !(regle$colonne %in% colonnes)) {
+      DBI::dbExecute(con, sprintf('ALTER TABLE "%s" ADD COLUMN "%s" %s',
+                                  regle$table, regle$colonne, regle$type))
+      appliquees <- c(appliquees, sprintf("%s.%s ajoutée", regle$table, regle$colonne))
+    }
+  }
+
+  if (length(appliquees)) {
+    message("Base mise à niveau : ", paste(appliquees, collapse = ", "))
+  }
+  invisible(appliquees)
 }
 
 #' Découpe un script SQL en instructions, en préservant les corps de triggers.

@@ -85,6 +85,43 @@ def test_schema_est_rejouable(tmp: Path) -> None:
     assert db.scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger'") == 5
 
 
+def test_base_ancienne_est_mise_a_niveau(tmp: Path) -> None:
+    """Une base créée par une version antérieure doit rester utilisable.
+
+    schema.sql ne contient que des CREATE ... IF NOT EXISTS : il ne touche pas
+    à une base déjà remplie. shared/migrations.json rattrape l'écart, sinon la
+    génération échoue sur « table company has no column named logo_mark ».
+    """
+    import sqlite3
+
+    path = tmp / "ancienne.db"
+    Database(path).close()
+
+    # On remet la base dans son état d'avant la charte visuelle.
+    brute = sqlite3.connect(path)
+    brute.execute('ALTER TABLE company RENAME COLUMN logo_mark TO logo_emoji')
+    brute.commit()
+    brute.close()
+
+    db = Database(path)          # réouverture par le code actuel
+    colonnes = {row[1] for row in db.conn.execute("PRAGMA table_info(company)")}
+    assert "logo_mark" in colonnes, "la migration doit renommer la colonne"
+    assert "logo_emoji" not in colonnes
+
+    # Et la base reste pleinement fonctionnelle après la mise à niveau.
+    create_company("Boutique héritée", "generique", db=db, **FAST)
+    assert db.scalar("SELECT COUNT(*) FROM sales") > 0
+
+
+def test_migrations_rejouables(tmp: Path) -> None:
+    """Rejouer les migrations sur une base à jour ne fait rien."""
+    from erp.database import apply_migrations
+
+    db = Database(tmp / "ajour.db")
+    assert apply_migrations(db.conn) == [], "aucune migration sur une base neuve"
+    assert apply_migrations(db.conn) == []
+
+
 def test_vente_decharge_le_stock_et_alimente_la_finance(tmp: Path) -> None:
     """Une ligne de vente touche Ventes, Stock et Finance en une écriture."""
     db = make_company(tmp, "generique")
