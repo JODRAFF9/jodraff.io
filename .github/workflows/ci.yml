@@ -139,6 +139,23 @@ jobs:
 
       - name: Compiler l'application Angular
         working-directory: angular
+        timeout-minutes: 10
         env:
           NG_CLI_ANALYTICS: "false"
-        run: npm run build
+        run: |
+          # Le CLI Angular ne rend pas toujours la main après un build réussi
+          # (descripteur resté ouvert) : sur un exécuteur, le travail resterait
+          # « en cours » jusqu'au délai maximum. On le lance en arrière-plan, on
+          # surveille son journal, et on coupe dès qu'il annonce la fin du bundle.
+          : > ng.log
+          node node_modules/@angular/cli/bin/ng.js build > ng.log 2>&1 &
+          NG_PID=$!
+          for _ in $(seq 1 150); do          # 5 minutes au maximum
+            grep -q "bundle generation complete\|ERROR" ng.log && break
+            kill -0 "$NG_PID" 2>/dev/null || break
+            sleep 2
+          done
+          kill "$NG_PID" 2>/dev/null || true
+          wait "$NG_PID" 2>/dev/null || true
+          sed 's/\x1b\[[0-9;]*m//g' ng.log
+          grep -q "bundle generation complete" ng.log
