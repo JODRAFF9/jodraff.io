@@ -55,7 +55,7 @@
   "types": {
     "supermarche": {
       "label": "Supermarché / Grande surface",
-      "icon": "🛒",
+      "icon": "SM",
       "tagline": "Forte rotation, panier moyen élevé, gestion fine des pertes et des DLC.",
       "tax_rate": 0.18,
       "margin_target": 0.22,
@@ -294,7 +294,7 @@
     },
     "pharmacie": {
       "label": "Pharmacie / Parapharmacie",
-      "icon": "💊",
+      "icon": "PH",
       "tagline": "Traçabilité des lots, ordonnances, marges réglementées et ruptures critiques.",
       "tax_rate": 0.0,
       "margin_target": 0.31,
@@ -508,7 +508,7 @@
     },
     "quincaillerie": {
       "label": "Quincaillerie / Matériaux de construction",
-      "icon": "🔩",
+      "icon": "QC",
       "tagline": "Panier lourd, ventes B2B aux chantiers, stocks volumineux et devis.",
       "tax_rate": 0.18,
       "margin_target": 0.26,
@@ -740,7 +740,7 @@
     },
     "mode": {
       "label": "Boutique de mode / Prêt-à-porter",
-      "icon": "👗",
+      "icon": "MO",
       "tagline": "Collections saisonnières, tailles et couleurs, démarques et fidélité client.",
       "tax_rate": 0.18,
       "margin_target": 0.52,
@@ -954,7 +954,7 @@
     },
     "electronique": {
       "label": "Électronique & Téléphonie",
-      "icon": "📱",
+      "icon": "EL",
       "tagline": "Numéros de série, garanties, SAV et forte valeur unitaire immobilisée.",
       "tax_rate": 0.18,
       "margin_target": 0.18,
@@ -1168,7 +1168,7 @@
     },
     "restaurant": {
       "label": "Restaurant / Cafétéria",
-      "icon": "🍽️",
+      "icon": "RS",
       "tagline": "Recettes et matières premières, services midi/soir, pertes et couverts.",
       "tax_rate": 0.18,
       "margin_target": 0.62,
@@ -1388,7 +1388,7 @@
     },
     "generique": {
       "label": "Boutique générale / Multiservices",
-      "icon": "🏪",
+      "icon": "GN",
       "tagline": "Modèle polyvalent : adaptez les rayons, les prix et les équipes à votre activité.",
       "tax_rate": 0.18,
       "margin_target": 0.3,

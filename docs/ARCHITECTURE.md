@@ -174,8 +174,12 @@ Règles appliquées dans les quatre interfaces :
 - **jamais deux axes Y** : deux mesures d'échelles différentes donnent deux
   graphiques (voir « CA et tickets » dans le département Ventes) ;
 - les couleurs de **statut** (rupture, alerte) sont réservées et toujours
-  accompagnées d'une icône et d'un libellé, la couleur ne porte jamais seule
+  accompagnées d'un libellé écrit, la couleur ne porte jamais seule
   l'information ;
+- **aucune teinte bleue**, **aucune transparence**, **aucune émoticône**, et
+  Times New Roman partout : ces quatre points sont tenus par des tests
+  (`tests/test_pipeline.py`) qui relisent les feuilles de style et les gabarits
+  des quatre interfaces ;
 - chaque graphique a sa **vue table** correspondante, triable ;
 - répartitions en barres horizontales triées plutôt qu'en camemberts ;
 - magnitudes en rampe mono-teinte clair → foncé, jamais en arc-en-ciel.

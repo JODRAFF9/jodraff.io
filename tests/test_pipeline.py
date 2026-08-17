@@ -430,15 +430,87 @@ def test_theme_partage_coherent(tmp: Path) -> None:
     """La palette est le contrat visuel commun aux quatre interfaces."""
     from erp.theme import SERIES, STATUS, SURFACE
 
-    assert len(SERIES) == 8, "huit couleurs de série"
-    assert len(set(SERIES)) == 8, "aucune couleur de série en double"
+    assert len(SERIES) == 4, "quatre couleurs de série suffisent"
+    assert len(set(SERIES)) == 4, "aucune couleur de série en double"
     for couleur in SERIES:
         assert couleur.startswith("#") and len(couleur) == 7
     assert set(STATUS) == {"good", "warning", "serious", "critical"}
     assert not set(STATUS.values()) & set(SERIES), \
         "une couleur de statut ne doit jamais servir de couleur de série"
-    for jeton in ("chart", "page", "ink_primary", "grid", "axis"):
+    for jeton in ("chart", "page", "ink_primary", "grid", "axis", "border"):
         assert jeton in SURFACE
+
+
+def _hex_vers_teinte(couleur: str) -> float:
+    """Teinte en degrés (0-360) d'une couleur hexadécimale."""
+    import colorsys
+
+    r, v, b = (int(couleur[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    return colorsys.rgb_to_hsv(r, v, b)[0] * 360
+
+
+def test_aucune_teinte_bleue(tmp: Path) -> None:
+    """Contrainte de charte : le bleu est proscrit dans toute la palette."""
+    from erp.theme import DEPT_COLOR, SEQUENTIAL, SERIES, STATUS
+
+    a_verifier = list(SERIES) + list(STATUS.values()) + list(DEPT_COLOR.values()) + SEQUENTIAL
+    for couleur in a_verifier:
+        teinte = _hex_vers_teinte(couleur)
+        assert not (185 <= teinte <= 260), f"{couleur} est bleu (teinte {teinte:.0f} degrés)"
+
+
+def test_aucune_transparence_dans_les_styles(tmp: Path) -> None:
+    """Toutes les couleurs doivent être opaques, dans les quatre interfaces."""
+    feuilles = [
+        ROOT / "web" / "css" / "styles.css",
+        ROOT / "python" / "dash_app" / "assets" / "erp.css",
+        ROOT / "shiny" / "www" / "styles.css",
+        ROOT / "angular" / "src" / "styles.css",
+    ]
+    for feuille in feuilles:
+        contenu = feuille.read_text(encoding="utf-8")
+        for interdit in ("rgba(", "hsla(", "opacity:", "box-shadow"):
+            assert interdit not in contenu, f"{feuille.name} contient « {interdit} »"
+
+
+def test_aucune_emoticone_dans_l_interface(tmp: Path) -> None:
+    """L'interface n'utilise ni émoticône ni pictogramme décoratif."""
+    import re
+
+    emoticones = re.compile(
+        "[\U0001F300-\U0001FAFF\u2600-\u27BF\uFE0F\u2B00-\u2BFF]")
+    dossiers = [
+        (ROOT / "web", ("*.js", "*.html", "*.css")),
+        (ROOT / "python" / "dash_app", ("*.py", "*.css")),
+        (ROOT / "python" / "erp", ("*.py",)),
+        (ROOT / "shiny", ("*.R", "*.css")),
+        (ROOT / "angular" / "src", ("*.ts", "*.html", "*.css")),
+        (ROOT / "shared", ("*.json", "*.sql")),
+        (ROOT / "python", ("cli.py",)),
+    ]
+    fautifs = []
+    for dossier, motifs in dossiers:
+        for motif in motifs:
+            for fichier in dossier.rglob(motif):
+                if "node_modules" in str(fichier) or "dist" in str(fichier):
+                    continue
+                for numero, ligne in enumerate(
+                        fichier.read_text(encoding="utf-8").splitlines(), start=1):
+                    if emoticones.search(ligne):
+                        fautifs.append(f"{fichier.name}:{numero}")
+    assert not fautifs, "émoticônes trouvées : " + ", ".join(fautifs[:8])
+
+
+def test_typographie_serif_partout(tmp: Path) -> None:
+    """La charte impose Times New Roman aux quatre interfaces."""
+    from erp.theme import FONT
+
+    assert "Times New Roman" in FONT
+    for feuille in (ROOT / "web" / "css" / "styles.css",
+                    ROOT / "angular" / "src" / "styles.css",
+                    ROOT / "shiny" / "www" / "styles.css",
+                    ROOT / "python" / "dash_app" / "assets" / "erp.css"):
+        assert "Times New Roman" in feuille.read_text(encoding="utf-8"), feuille.name
 
 
 # ==========================================================================

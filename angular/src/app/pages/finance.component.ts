@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   imports: [...UI_COMPONENTS, ...CHART_COMPONENTS, DataTableComponent],
   template: `
     @if (data(); as d) {
-      <erp-page-head title="💰  Finance"
+      <erp-page-head title="Finance"
         subtitle="Le compte de résultat n'est pas ressaisi : ventes, coût des marchandises,
                   charges et paie remontent automatiquement des autres départements." />
 
@@ -28,7 +28,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
                  [accent]="c('HR')">structure et salaires</erp-kpi>
         <erp-kpi label="Résultat net" [value]="fmt(last().net_result)"
                  [accent]="last().net_result >= 0 ? 'var(--good)' : 'var(--critical)'">
-          {{ last().net_result >= 0 ? '✓ bénéfice' : '⛔ perte' }}
+          {{ last().net_result >= 0 ? 'bénéfice' : 'perte' }}
         </erp-kpi>
       </div>
 

@@ -20,8 +20,8 @@ def delta_badge(pct: float | None, positive_is_good: bool = True) -> html.Span:
         return html.Span("nouvelle période", className="delta flat")
     good = (pct >= 0) if positive_is_good else (pct <= 0)
     cls = "flat" if abs(pct) < 0.05 else ("up" if good else "down")
-    arrow = "→" if abs(pct) < 0.05 else ("↑" if pct > 0 else "↓")
-    return html.Span(f"{arrow} {abs(pct):.1f} %", className=f"delta {cls}")
+    signe = "+" if pct > 0 else ("\u2212" if pct < 0 else "")
+    return html.Span(f"{signe}{abs(pct):.1f} %".replace(".", ","), className=f"delta {cls}")
 
 
 def kpi_tile(label: str, value: str, foot: Any = None, accent: str = SURFACE["ink_muted"]) -> html.Div:
@@ -47,10 +47,10 @@ def card(title: str, children: Any, note: str = "", className: str = "") -> html
 
 def status_badge(status: str) -> html.Span:
     """Pastille d'état : couleur + icône + libellé."""
-    color, icon, label = STOCK_BADGE.get(status, (SURFACE["ink_muted"], "•", status))
+    color, label = STOCK_BADGE.get(status, (SURFACE["ink_muted"], status))
     return html.Span(
         [html.Span(className="badge-dot", style={"background": color}),
-         html.Span(f"{icon} {label}")],
+         html.Span(label)],
         className="badge",
         style={"background": _tint(color), "color": _ink(color)},
     )
@@ -177,7 +177,6 @@ def activity_feed(rows: list[dict], symbol: str) -> html.Div:
 
 def empty_state(message: str) -> html.Div:
     return html.Div(
-        [html.Div("∅", style={"fontSize": "28px", "opacity": .35}), html.P(message)],
-        style={"textAlign": "center", "padding": "34px 10px",
-               "color": SURFACE["ink_muted"], "fontSize": "13px"},
+        [html.P(message)],
+        className="empty",
     )

@@ -27,7 +27,7 @@ def layout(db, days: int = 30) -> html.Div:
     plan_amount = sum(p["amount"] or 0 for p in plan)
 
     return html.Div([
-        page_header("🚚  Achats",
+        page_header("Achats",
                     "Le plan de commande n'est pas saisi : il est déduit des niveaux de "
                     "stock et des ventes, puis groupé par fournisseur."),
 

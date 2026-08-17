@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 
-import { axisTick, compact, money, seriesColor } from '../core/format';
+import { axisTick, compact, money, seriesColor, seriesTint } from '../core/format';
 import { EmptyComponent } from './ui.components';
 
 /*
@@ -49,7 +49,7 @@ interface GridLine { y: number; label: string; }
         }
         @for (path of paths(); track path.name) {
           @if (fill() && names().length === 1) {
-            <path [attr.d]="path.area" [attr.fill]="path.color" fill-opacity="0.10" />
+            <path [attr.d]="path.area" [attr.fill]="path.tint" />
           }
           <path [attr.d]="path.line" fill="none" [attr.stroke]="path.color"
                 stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
@@ -147,7 +147,7 @@ export class LineChartComponent {
         .join(' ');
       const last = this.pointX(values.length - 1).toFixed(1);
       return {
-        name, values, color: seriesColor(i), line,
+        name, values, color: seriesColor(i), tint: seriesTint(i), line,
         area: `${line} L${last} ${b.y + b.h} L${b.x} ${b.y + b.h} Z`,
       };
     });

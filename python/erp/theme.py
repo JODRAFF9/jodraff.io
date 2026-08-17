@@ -32,20 +32,29 @@ def load_theme() -> dict[str, Any]:
 
 THEME = load_theme()
 SERIES: list[str] = THEME["categorical"]["light"]
+SERIES_TINT: list[str] = THEME["series_tint"]["light"]
 SEQUENTIAL: list[str] = THEME["sequential"]["light"]
 STATUS: dict[str, str] = {k: v for k, v in THEME["status"].items() if k != "note"}
 SURFACE: dict[str, str] = THEME["surface"]["light"]
 DEPT_COLOR: dict[str, str] = THEME["departments"]
 FONT = THEME["typography"]["font_family"]
 
-# Statut de stock -> (couleur, icône, libellé). L'icône et le libellé sont
-# obligatoires : la couleur ne porte jamais l'information seule.
+# Statut de stock -> (couleur, libellé). Le libellé est obligatoire : la
+# couleur ne porte jamais l'information seule. Aucune icône, aucune émoticône.
 STOCK_BADGE = {
-    "rupture": (STATUS["critical"], "⛔", "Rupture"),
-    "alerte": (STATUS["serious"], "▲", "À commander"),
-    "faible": (STATUS["warning"], "•", "Stock faible"),
-    "ok": (STATUS["good"], "✓", "Disponible"),
+    "rupture": (STATUS["critical"], "Rupture"),
+    "alerte": (STATUS["serious"], "À commander"),
+    "faible": (STATUS["warning"], "Stock faible"),
+    "ok": (STATUS["good"], "Disponible"),
 }
+
+STATUS_TINT: dict[str, str] = THEME["status_tint"]["light"]
+STATUS_INK: dict[str, str] = THEME["status_ink"]["light"]
+
+
+def series_tint(index: int) -> str:
+    """Aplat plein sous une courbe : jamais une opacité."""
+    return SERIES_TINT[index % len(SERIES_TINT)]
 
 
 def series_color(index: int) -> str:
@@ -72,14 +81,14 @@ def sequential_scale(n: int) -> list[str]:
 # --------------------------------------------------------------------------
 ERP_TEMPLATE = go.layout.Template(
     layout=go.Layout(
-        font=dict(family=FONT, size=13, color=SURFACE["ink_secondary"]),
+        font=dict(family=FONT, size=14, color=SURFACE["ink_secondary"]),
         title=dict(font=dict(size=15, color=SURFACE["ink_primary"]), x=0, xanchor="left"),
         paper_bgcolor=SURFACE["chart"],
         plot_bgcolor=SURFACE["chart"],
         colorway=SERIES,
         margin=dict(l=56, r=20, t=48, b=44),
-        hoverlabel=dict(font=dict(family=FONT, size=12), bgcolor="#ffffff",
-                        bordercolor=SURFACE["axis"]),
+        hoverlabel=dict(font=dict(family=FONT, size=13), bgcolor=SURFACE["card"],
+                        bordercolor=SURFACE["border_strong"]),
         hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
                     font=dict(size=12, color=SURFACE["ink_secondary"]),

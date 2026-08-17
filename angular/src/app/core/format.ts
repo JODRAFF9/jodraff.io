@@ -67,12 +67,17 @@ export function dateTime(iso: string | null | undefined): string {
 
 /** Couleur de série : ordre FIXE, jamais recyclé quand un filtre change. */
 export function seriesColor(index: number): string {
-  return `var(--s${(index % 8) + 1})`;
+  return `var(--s${(index % 4) + 1})`;
+}
+
+/** Aplat sous une courbe : teinte pleine, jamais une opacite. */
+export function seriesTint(index: number): string {
+  return `var(--s${(index % 4) + 1}-tint)`;
 }
 
 export const DEPT_COLOR: Record<string, string> = {
-  OVERVIEW: 'var(--s7)', SALES: 'var(--s1)', STOCK: 'var(--s2)',
-  PURCH: 'var(--s3)', CRM: 'var(--s5)', HR: 'var(--s4)', FIN: 'var(--s6)',
+  OVERVIEW: '#4a4a45', SALES: '#12876a', STOCK: '#c25f28',
+  PURCH: '#7a3f9d', CRM: '#9a7112', HR: '#1f7a33', FIN: '#6b4a2f',
 };
 
 export function deptColor(code: string): string {
@@ -80,23 +85,24 @@ export function deptColor(code: string): string {
 }
 
 /** Statut de stock -> classe CSS, icône et libellé (jamais la couleur seule). */
-export const STOCK_STATUS: Record<string, { cls: string; icon: string; label: string }> = {
-  rupture: { cls: 'critical', icon: '⛔', label: 'Rupture' },
-  alerte: { cls: 'serious', icon: '▲', label: 'À commander' },
-  faible: { cls: 'warning', icon: '•', label: 'Stock faible' },
-  ok: { cls: 'good', icon: '✓', label: 'Disponible' },
+export const STOCK_STATUS: Record<string, { cls: string; label: string }> = {
+  rupture: { cls: 'critical', label: 'Rupture' },
+  alerte: { cls: 'serious', label: 'À commander' },
+  faible: { cls: 'warning', label: 'Stock faible' },
+  ok: { cls: 'good', label: 'Disponible' },
 };
 
 /** Évolution période sur période : flèche + valeur absolue + sens. */
+/** Evolution signee : le signe porte l'information, la couleur la renforce. */
 export function deltaParts(pct: number | null | undefined):
-    { cls: string; arrow: string; text: string } {
+    { cls: string; text: string } {
   if (pct === null || pct === undefined) {
-    return { cls: 'flat', arrow: 'n.d.', text: 'nouvelle période' };
+    return { cls: 'flat', text: 'nouvelle période' };
   }
   const flat = Math.abs(pct) < 0.05;
+  const signe = pct > 0 ? '+' : pct < 0 ? '\u2212' : '';
   return {
     cls: flat ? 'flat' : pct > 0 ? 'up' : 'down',
-    arrow: flat ? '→' : pct > 0 ? '↑' : '↓',
-    text: `${Math.abs(pct).toFixed(1).replace('.', ',')} %`,
+    text: `${signe}${Math.abs(pct).toFixed(1).replace('.', ',')} %`,
   };
 }

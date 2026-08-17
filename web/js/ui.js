@@ -6,20 +6,21 @@
   'use strict';
 
   var DEPT_COLOR = {
-    OVERVIEW: '--s7', SALES: '--s1', STOCK: '--s2',
-    PURCH: '--s3', CRM: '--s5', HR: '--s4', FIN: '--s6'
+    OVERVIEW: '#4a4a45', SALES: '#12876a', STOCK: '#c25f28',
+    PURCH: '#7a3f9d', CRM: '#9a7112', HR: '#1f7a33', FIN: '#6b4a2f'
   };
 
-  function deptColor(code) { return 'var(' + (DEPT_COLOR[code] || '--ink-muted') + ')'; }
+  function deptColor(code) { return DEPT_COLOR[code] || 'var(--ink-muted)'; }
 
   /** Évolution : flèche + valeur, la couleur ne porte jamais seule l'information. */
   function delta(pct) {
     if (pct === null || pct === undefined) {
       return '<span class="delta flat">nouvelle période</span>';
     }
+    // Evolution signee : le signe porte l'information, la couleur la renforce.
     var cls = Math.abs(pct) < 0.05 ? 'flat' : (pct > 0 ? 'up' : 'down');
-    var arrow = Math.abs(pct) < 0.05 ? '→' : (pct > 0 ? '↑' : '↓');
-    return '<span class="delta ' + cls + '">' + arrow + ' ' +
+    var signe = pct > 0 ? '+' : (pct < 0 ? '\u2212' : '');
+    return '<span class="delta ' + cls + '">' + signe +
            Math.abs(pct).toFixed(1).replace('.', ',') + ' %</span>';
   }
 
@@ -41,17 +42,19 @@
   /** Emplacement pour un graphique, rempli après insertion dans le DOM. */
   function chartSlot(id) { return '<div id="' + id + '"></div>'; }
 
+  // L'etat est porte par un libelle explicite ; la pastille ne fait que le
+  // renforcer. Aucune emoticone.
   var STATUS = {
-    rupture:  ['critical', '⛔', 'Rupture'],
-    alerte:   ['serious',  '▲', 'À commander'],
-    faible:   ['warning',  '•', 'Stock faible'],
-    ok:       ['good',     '✓', 'Disponible']
+    rupture: ['critical', 'Rupture'],
+    alerte:  ['serious',  'A commander'],
+    faible:  ['warning',  'Stock faible'],
+    ok:      ['good',     'Disponible']
   };
 
   function badge(status) {
-    var spec = STATUS[status] || ['', '•', status];
+    var spec = STATUS[status] || ['', status];
     return '<span class="badge ' + spec[0] + '"><span class="badge-dot" style="background:var(--' +
-      (spec[0] || 'ink-muted') + ')"></span>' + spec[1] + ' ' + Fmt.esc(spec[2]) + '</span>';
+      (spec[0] || 'ink-muted') + ')"></span>' + Fmt.esc(spec[1]) + '</span>';
   }
 
   /**
@@ -64,8 +67,7 @@
     var id = 'tbl-' + (++tableSeq);
     var limit = opts.limit || 12;
     if (!rows || !rows.length) {
-      return '<div class="empty"><span class="mark">∅</span>' +
-             Fmt.esc(opts.empty || 'Aucune ligne.') + '</div>';
+      return '<div class="empty">' + Fmt.esc(opts.empty || 'Aucune ligne.') + '</div>';
     }
     var state = { rows: rows, columns: columns, opts: opts, sort: null, asc: false, limit: limit };
     TABLES[id] = state;

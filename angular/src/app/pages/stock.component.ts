@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   imports: [...UI_COMPONENTS, ...CHART_COMPONENTS, DataTableComponent],
   template: `
     @if (data(); as d) {
-      <erp-page-head title="📦  Stock"
+      <erp-page-head title="Stock"
         subtitle="Le stock n'est jamais saisi à la main : il résulte des ventes, des
                   réceptions fournisseurs et des écritures d'inventaire." />
 
@@ -26,10 +26,10 @@ import { UI_COMPONENTS } from '../shared/ui.components';
           marge potentielle {{ fmt(retailValue() - costValue()) }}
         </erp-kpi>
         <erp-kpi label="Ruptures" [value]="'' + outOfStock()" accent="var(--critical)">
-          ⛔ vente impossible
+          vente impossible
         </erp-kpi>
         <erp-kpi label="À commander" [value]="'' + d.alerts.length" accent="var(--serious)">
-          ▲ sous le point de commande
+          sous le point de commande
         </erp-kpi>
       </div>
 

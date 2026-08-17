@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   imports: [...UI_COMPONENTS, ...CHART_COMPONENTS, DataTableComponent],
   template: `
     @if (data(); as d) {
-      <erp-page-head title="🧑‍💼  Ressources humaines"
+      <erp-page-head title="Ressources humaines"
         subtitle="L'équipe est reliée aux ventes : le même identifiant salarié sert à la paie
                   et au calcul de la performance commerciale." />
 

@@ -10,16 +10,18 @@
 
 #' Mise en forme commune (grille, axes, police, marges).
 apply_layout <- function(p, height = 290, showlegend = FALSE, symbol = NULL, ...) {
+  # La hauteur se règle sur le widget lui-même : la passer à layout() est
+  # déprécié par plotly et déclenche un avertissement à chaque graphique.
+  p$height <- height
   p <- plotly::layout(
     p,
-    height = height,
     showlegend = showlegend,
-    font = list(family = FONT, size = 13, color = SURFACE$ink_secondary),
+    font = list(family = FONT, size = 14, color = SURFACE$ink_secondary),
     paper_bgcolor = SURFACE$chart,
     plot_bgcolor  = SURFACE$chart,
     margin = list(l = 60, r = 18, t = 18, b = 44),
     hovermode = "x unified",
-    hoverlabel = list(font = list(family = FONT, size = 12), bgcolor = "#ffffff"),
+    hoverlabel = list(font = list(family = FONT, size = 13), bgcolor = SURFACE$card),
     legend = list(orientation = "h", y = 1.08, x = 0,
                   font = list(size = 12, color = SURFACE$ink_secondary)),
     xaxis = list(showgrid = FALSE, zeroline = FALSE, linecolor = SURFACE$axis,
@@ -47,7 +49,7 @@ chart_line <- function(x, series, symbol = NULL, height = 280, fill = FALSE) {
       type = "scatter", mode = "lines",
       line = list(color = color, width = 2, shape = "spline", smoothing = 0.4),
       fill = if (fill && length(series) == 1) "tozeroy" else "none",
-      fillcolor = if (fill) paste0(color, "1A") else NULL,
+      fillcolor = if (fill) SERIES_TINT[((i - 1) %% length(SERIES_TINT)) + 1] else NULL,
       hovertemplate = paste0(names_series[i], " : %{y:,.0f}<extra></extra>"))
   }
   apply_layout(p, height, showlegend = length(series) > 1, symbol = symbol)
@@ -75,9 +77,10 @@ chart_grouped <- function(x, series, symbol = NULL, height = 300, stacked = FALS
                     line = if (stacked) list(width = 2, color = SURFACE$chart) else NULL),
       hovertemplate = paste0(names_series[i], " : %{y:,.0f}<extra></extra>"))
   }
+  # « bargroupgap » reste à sa valeur par défaut : le schéma embarqué du paquet
+  # R ne connaît pas cet attribut et le rejetterait à chaque rendu.
   apply_layout(p, height, showlegend = TRUE, symbol = symbol,
-               barmode = if (stacked) "stack" else "group",
-               bargap = 0.28, bargroupgap = 0.08)
+               barmode = if (stacked) "stack" else "group", bargap = 0.28)
 }
 
 #' Répartition : barres horizontales triées, valeur et part affichées.
@@ -98,8 +101,11 @@ chart_share <- function(labels, values, symbol = "", height = NULL) {
   plotly::layout(
     p, hovermode = "closest",
     xaxis = list(showticklabels = FALSE, showgrid = FALSE, zeroline = FALSE,
-                 range = c(0, max(values) * 1.9)),
+                 showline = FALSE, ticks = "", range = c(0, max(values) * 1.9)),
+    # Graduation invisible mais de la même couleur que le fond : elle sert
+    # uniquement à écarter le libellé de la barre, qui sinon le touche.
     yaxis = list(showgrid = FALSE, automargin = TRUE, type = "category",
+                 ticks = "outside", ticklen = 9, tickcolor = SURFACE$chart,
                  tickfont = list(color = SURFACE$ink_secondary, size = 12)))
 }
 
@@ -157,8 +163,9 @@ chart_heatmap <- function(z, x, y, height = 300, unit = "") {
 chart_empty <- function(message) {
   plotly::config(
     plotly::layout(
-      plotly::plot_ly(type = "scatter", mode = "markers", x = numeric(0), y = numeric(0)),
-      height = 200, paper_bgcolor = SURFACE$chart, plot_bgcolor = SURFACE$chart,
+      plotly::plot_ly(type = "scatter", mode = "markers", x = numeric(0),
+                      y = numeric(0), height = 200),
+      paper_bgcolor = SURFACE$chart, plot_bgcolor = SURFACE$chart,
       xaxis = list(visible = FALSE), yaxis = list(visible = FALSE),
       annotations = list(list(text = message, showarrow = FALSE, xref = "paper",
                               yref = "paper", x = 0.5, y = 0.5,

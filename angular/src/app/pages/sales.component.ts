@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   imports: [...UI_COMPONENTS, ...CHART_COMPONENTS, DataTableComponent],
   template: `
     @if (data(); as d) {
-      <erp-page-head title="🧾  Ventes"
+      <erp-page-head title="Ventes"
         subtitle="Chaque ticket enregistré décharge le stock, alimente la fiche client et le
                   compte de résultat, sans aucune ressaisie." />
 

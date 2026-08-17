@@ -17,7 +17,7 @@ import { Currency, StoreType } from '../core/models';
   template: `
     <main class="onboard-page">
       <section class="onboard">
-        <div class="onboard-logo">🏪</div>
+        <div class="onboard-mark">ERP Boutique</div>
         <h1>Créez le tableau de bord de votre boutique</h1>
         <p class="lead">
           Indiquez le type de commerce que vous exploitez et son nom. La plateforme génère
@@ -94,10 +94,9 @@ import { Currency, StoreType } from '../core/models';
         </details>
 
         @if (error()) {
-          <div class="notice notice-warn"><span>⚠️</span><div>{{ error() }}</div></div>
+          <div class="notice notice-warn"><div>{{ error() }}</div></div>
         } @else {
           <div class="notice notice-info">
-            <span>ℹ️</span>
             <div>
               <b>Les six départements sont livrés d'office.</b>
               Ils partagent une seule base de données : une vente décharge le stock,

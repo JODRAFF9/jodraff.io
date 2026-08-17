@@ -4,13 +4,13 @@ import { DepartmentNav } from './core/models';
 
 /** Navigation des départements, même ordre dans les quatre interfaces. */
 export const DEPARTMENTS: DepartmentNav[] = [
-  { code: 'OVERVIEW', route: 'vue-ensemble', icon: '📊', name: "Vue d'ensemble" },
-  { code: 'SALES', route: 'ventes', icon: '🧾', name: 'Ventes' },
-  { code: 'STOCK', route: 'stock', icon: '📦', name: 'Stock' },
-  { code: 'PURCH', route: 'achats', icon: '🚚', name: 'Achats' },
-  { code: 'CRM', route: 'clients', icon: '👥', name: 'Clients' },
-  { code: 'HR', route: 'rh', icon: '🧑‍💼', name: 'Ressources humaines' },
-  { code: 'FIN', route: 'finance', icon: '💰', name: 'Finance' },
+  { code: 'OVERVIEW', route: 'vue-ensemble', name: "Vue d'ensemble" },
+  { code: 'SALES', route: 'ventes', name: 'Ventes' },
+  { code: 'STOCK', route: 'stock', name: 'Stock' },
+  { code: 'PURCH', route: 'achats', name: 'Achats' },
+  { code: 'CRM', route: 'clients', name: 'Clients' },
+  { code: 'HR', route: 'rh', name: 'Ressources humaines' },
+  { code: 'FIN', route: 'finance', name: 'Finance' },
 ];
 
 /** Chargement paresseux : chaque département arrive dans son propre bundle. */

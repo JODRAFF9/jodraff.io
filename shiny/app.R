@@ -99,7 +99,7 @@ dashboard_ui <- function(company) {
     id = "nav",
     title = div(
       class = "brand",
-      span(class = "brand-logo", company$logo_emoji),
+      span(class = "brand-logo", company$logo_mark),
       div(div(class = "brand-name", company$name),
           div(class = "brand-type", company$store_label))),
     theme = erp_theme(),
@@ -115,13 +115,13 @@ dashboard_ui <- function(company) {
            sprintf("Base SQL centrale · %s · TVA %s %%",
                    company$currency, fr_num(company$tax_rate * 100, 0))),
       actionButton("reset", "Réinitialiser", class = "btn btn-danger btn-sm")),
-    bslib::nav_panel(title = "\U0001F4CA Vue d'ensemble", overview_ui("overview")),
-    bslib::nav_panel(title = "\U0001F9FE Ventes",         sales_ui("sales")),
-    bslib::nav_panel(title = "\U0001F4E6 Stock",          stock_ui("stock")),
-    bslib::nav_panel(title = "\U0001F69A Achats",         purchasing_ui("purchasing")),
-    bslib::nav_panel(title = "\U0001F465 Clients",        crm_ui("crm")),
-    bslib::nav_panel(title = "\U0001F9D1 Ressources humaines", hr_ui("hr")),
-    bslib::nav_panel(title = "\U0001F4B0 Finance",        finance_ui("finance"))
+    bslib::nav_panel(title = "Vue d'ensemble", overview_ui("overview")),
+    bslib::nav_panel(title = "Ventes",         sales_ui("sales")),
+    bslib::nav_panel(title = "Stock",          stock_ui("stock")),
+    bslib::nav_panel(title = "Achats",         purchasing_ui("purchasing")),
+    bslib::nav_panel(title = "Clients",        crm_ui("crm")),
+    bslib::nav_panel(title = "Ressources humaines", hr_ui("hr")),
+    bslib::nav_panel(title = "Finance",        finance_ui("finance"))
   )
 }
 

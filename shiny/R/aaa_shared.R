@@ -71,11 +71,11 @@ DB_PATH     <- Sys.getenv(
 
 # --- Départements : l'axe de centralisation des données ----------------
 DEPARTMENTS <- list(
-  list(code = "OVERVIEW", route = "overview",   icon = "\U0001F4CA", name = "Vue d'ensemble"),
-  list(code = "SALES",    route = "sales",      icon = "\U0001F9FE", name = "Ventes"),
-  list(code = "STOCK",    route = "stock",      icon = "\U0001F4E6", name = "Stock"),
-  list(code = "PURCH",    route = "purchasing", icon = "\U0001F69A", name = "Achats"),
-  list(code = "CRM",      route = "crm",        icon = "\U0001F465", name = "Clients"),
-  list(code = "HR",       route = "hr",         icon = "\U0001F9D1", name = "Ressources humaines"),
-  list(code = "FIN",      route = "finance",    icon = "\U0001F4B0", name = "Finance")
+  list(code = "OVERVIEW", route = "overview",   name = "Vue d'ensemble"),
+  list(code = "SALES",    route = "sales",      name = "Ventes"),
+  list(code = "STOCK",    route = "stock",      name = "Stock"),
+  list(code = "PURCH",    route = "purchasing", name = "Achats"),
+  list(code = "CRM",      route = "crm",        name = "Clients"),
+  list(code = "HR",       route = "hr",         name = "Ressources humaines"),
+  list(code = "FIN",      route = "finance",    name = "Finance")
 )

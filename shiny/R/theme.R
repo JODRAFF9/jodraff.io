@@ -9,6 +9,7 @@
 
 SERIES     <- unlist(THEME$categorical$light)
 SEQUENTIAL <- unlist(THEME$sequential$light)
+SERIES_TINT <- unlist(THEME$series_tint$light)
 STATUS     <- THEME$status
 SURFACE    <- THEME$surface$light
 DEPT_COLOR <- THEME$departments
@@ -23,17 +24,21 @@ dept_color <- function(code) {
   if (is.null(value)) SURFACE$ink_muted else value
 }
 
-#' Statut de stock -> couleur, icône et libellé (jamais la couleur seule).
+#' Statut de stock -> couleur, teinte, encre et libellé.
+#' Le libellé porte l'information ; la couleur ne fait que la renforcer.
+#' Aucune icône, aucune émoticône.
 stock_badge <- function(status) {
+  tint <- THEME$status_tint$light
+  ink  <- THEME$status_ink$light
   switch(status,
-    "rupture" = list(color = STATUS$critical, icon = "⛔", label = "Rupture",
-                     tint = "#fbeded", ink = "#8f2222"),
-    "alerte"  = list(color = STATUS$serious,  icon = "▲", label = "À commander",
-                     tint = "#fdefe8", ink = "#8a3d17"),
-    "faible"  = list(color = STATUS$warning,  icon = "•", label = "Stock faible",
-                     tint = "#fdf3e2", ink = "#7a5307"),
-    list(color = STATUS$good, icon = "✓", label = "Disponible",
-         tint = "#eaf7ea", ink = "#0a5d0a"))
+    "rupture" = list(color = STATUS$critical, label = "Rupture",
+                     tint = tint$critical, ink = ink$critical),
+    "alerte"  = list(color = STATUS$serious,  label = "À commander",
+                     tint = tint$serious,  ink = ink$serious),
+    "faible"  = list(color = STATUS$warning,  label = "Stock faible",
+                     tint = tint$warning,  ink = ink$warning),
+    list(color = STATUS$good, label = "Disponible",
+         tint = tint$good, ink = ink$good))
 }
 
 #' Thème bslib de l'application.
@@ -44,12 +49,11 @@ erp_theme <- function() {
     primary = SERIES[1], secondary = SURFACE$ink_secondary,
     success = STATUS$good, warning = STATUS$warning, danger = STATUS$critical,
     base_font = bslib::font_collection(
-      bslib::font_google("Inter", local = FALSE, wght = c(400, 500, 600, 700)),
-      "system-ui", "-apple-system", "Segoe UI", "sans-serif"),
+      "Times New Roman", "Times", "Liberation Serif", "serif"),
     "body-bg" = SURFACE$page,
     "card-border-color" = SURFACE$border,
     "card-border-radius" = "10px",
-    "font-size-base" = "0.875rem"
+    "font-size-base" = "0.9375rem"
   )
 }
 
@@ -112,7 +116,7 @@ delta_html <- function(pct) {
   }
   flat <- abs(pct) < 0.05
   class <- if (flat) "flat" else if (pct > 0) "up" else "down"
-  arrow <- if (flat) "→" else if (pct > 0) "↑" else "↓"
+  signe <- if (pct > 0) "+" else if (pct < 0) "\u2212" else ""
   shiny::span(class = paste("delta", class),
-              sprintf("%s %s %%", arrow, fr_num(abs(pct), 1)))
+              sprintf("%s%s %%", signe, fr_num(abs(pct), 1)))
 }

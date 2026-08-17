@@ -32,7 +32,7 @@ def layout(db, days: int = 30) -> html.Div:
     points = db.scalar("SELECT COALESCE(SUM(loyalty_points), 0) FROM customers")
 
     return html.Div([
-        page_header("👥  Clients",
+        page_header("Clients",
                     "La fiche client se remplit toute seule : chaque encaissement met à "
                     "jour son historique, sa valeur et ses points de fidélité."),
 

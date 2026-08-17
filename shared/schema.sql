@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS company (
     city         TEXT,
     country      TEXT,
     opened_on    TEXT,
-    logo_emoji   TEXT    DEFAULT '🏪',
+    logo_mark    TEXT    DEFAULT 'BQ',       -- monogramme affiché dans la barre latérale
     created_at   TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 

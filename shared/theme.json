@@ -1,55 +1,96 @@
 {
-  "name": "ERP Boutique, système visuel",
-  "note": "Jetons de design partagés par le dashboard R Shiny, le dashboard Python/Dash, le front web et l'application Angular. Palette catégorielle validée (bande de clarté, plancher de chroma, séparation daltonisme ΔE ≥ 8 sur paires adjacentes, plancher vision normale ΔE ≥ 15). Les couleurs sont assignées dans un ORDRE FIXE, jamais recyclé : une série garde sa couleur même si un filtre change le nombre de séries.",
+  "name": "ERP Boutique, systeme visuel",
+  "note": "Jetons partages par les quatre interfaces. Contraintes retenues : aucune teinte bleue, aucune transparence (toutes les valeurs sont opaques), aucune emoticone, serif Times New Roman. La palette categorielle est validee dans les deux modes : bande de clarte, plancher de chroma, separation daltonisme sur paires adjacentes et plancher vision normale, toutes portes franchies sans avertissement. Quatre emplacements suffisent : aucun graphique du projet n'affiche plus de trois series.",
   "categorical": {
-    "light": ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"],
-    "dark":  ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
-    "max_series": 8,
-    "max_series_all_pairs": 3
+    "light": [
+      "#12876a",
+      "#c25f28",
+      "#7a3f9d",
+      "#9a7112"
+    ],
+    "dark": [
+      "#35a184",
+      "#c9703c",
+      "#9c6cbe",
+      "#a3841f"
+    ],
+    "max_series": 4,
+    "note": "Ordre FIXE. Le rouge est absent : il est reserve aux etats."
   },
   "sequential": {
-    "hue": "blue",
-    "light": ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"],
-    "ordinal_min_light": "#86b6ef",
-    "ordinal_max_dark": "#184f95"
+    "hue": "teal",
+    "light": [
+      "#e0efea",
+      "#c6e2d9",
+      "#a9d3c6",
+      "#89c3b2",
+      "#67b09c",
+      "#469a84",
+      "#2b8a70",
+      "#12876a",
+      "#0d6a53",
+      "#094f3e"
+    ],
+    "dark": [
+      "#0d3b30",
+      "#11493b",
+      "#155747",
+      "#1a6553",
+      "#20745f",
+      "#27846c",
+      "#2f9279",
+      "#35a184",
+      "#5bb59d",
+      "#83c9b7"
+    ]
   },
   "diverging": {
-    "negative": "#d03b3b",
-    "midpoint_light": "#f0efec",
-    "midpoint_dark": "#383835",
-    "positive": "#2a78d6"
+    "negative": "#a32020",
+    "midpoint_light": "#eceae4",
+    "midpoint_dark": "#33333a",
+    "positive": "#12876a"
   },
   "status": {
-    "good": "#0ca30c",
-    "warning": "#fab219",
-    "serious": "#ec835a",
-    "critical": "#d03b3b",
-    "note": "Réservé aux états (rupture, alerte, OK). Jamais réutilisé comme couleur de série, et toujours accompagné d'une icône + d'un libellé, la couleur ne porte jamais l'information seule."
+    "good": "#1f7a33",
+    "warning": "#8a6a00",
+    "serious": "#a04a1a",
+    "critical": "#a32020",
+    "note": "Reserve aux etats. Toujours accompagne d'un libelle explicite (Rupture, A commander...) : la couleur ne porte jamais seule l'information, et aucune emoticone n'est utilisee."
   },
   "surface": {
     "light": {
-      "chart": "#fcfcfb",
-      "page": "#f9f9f7",
+      "chart": "#ffffff",
+      "page": "#f4f4f1",
       "card": "#ffffff",
-      "ink_primary": "#0b0b0b",
-      "ink_secondary": "#52514e",
-      "ink_muted": "#898781",
-      "grid": "#e1e0d9",
-      "axis": "#c3c2b7",
-      "border": "rgba(11,11,11,0.10)",
-      "delta_good": "#006300"
+      "ink_primary": "#12120f",
+      "ink_secondary": "#4a4a45",
+      "ink_muted": "#7c7c74",
+      "grid": "#e6e5df",
+      "axis": "#c9c8c0",
+      "border": "#dcdbd4",
+      "delta_good": "#0a5c0a",
+      "border_strong": "#b8b7ae",
+      "hover": "#eeeeea",
+      "accent_soft": "#e7f2ee",
+      "accent": "#12876a",
+      "accent_ink": "#ffffff"
     },
     "dark": {
-      "chart": "#1a1a19",
-      "page": "#0d0d0d",
-      "card": "#1f1f1e",
-      "ink_primary": "#ffffff",
-      "ink_secondary": "#c3c2b7",
-      "ink_muted": "#898781",
-      "grid": "#2c2c2a",
-      "axis": "#383835",
-      "border": "rgba(255,255,255,0.10)",
-      "delta_good": "#0ca30c"
+      "chart": "#17171a",
+      "page": "#0e0e10",
+      "card": "#1c1c20",
+      "ink_primary": "#f5f5f2",
+      "ink_secondary": "#c2c1ba",
+      "ink_muted": "#8a8a82",
+      "grid": "#2c2c31",
+      "axis": "#3a3a40",
+      "border": "#2f2f35",
+      "delta_good": "#3fbb3f",
+      "border_strong": "#4a4a52",
+      "hover": "#242429",
+      "accent_soft": "#16292a",
+      "accent": "#35a184",
+      "accent_ink": "#10221c"
     }
   },
   "stock_status": {
@@ -59,16 +100,59 @@
     "ok": "good"
   },
   "typography": {
-    "font_family": "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
-    "tabular_nums_for": "colonnes de tableaux et graduations d'axes uniquement"
+    "font_family": "'Times New Roman', Times, 'Liberation Serif', serif",
+    "tabular_nums_for": "colonnes de tableaux et graduations d'axes uniquement",
+    "no_emoji": "Aucune emoticone. Les metiers et les departements sont designes par un monogramme typographique encadre ; les etats par un libelle et une pastille de couleur pleine."
   },
   "departments": {
-    "OVERVIEW": "#4a3aa7",
-    "SALES": "#2a78d6",
-    "STOCK": "#eb6834",
-    "PURCH": "#1baf7a",
-    "CRM": "#e87ba4",
-    "HR": "#eda100",
-    "FIN": "#008300"
+    "OVERVIEW": "#4a4a45",
+    "SALES": "#12876a",
+    "STOCK": "#c25f28",
+    "PURCH": "#7a3f9d",
+    "CRM": "#9a7112",
+    "HR": "#1f7a33",
+    "FIN": "#6b4a2f"
+  },
+  "series_tint": {
+    "light": [
+      "#e7f2ee",
+      "#f8ece5",
+      "#f0e9f5",
+      "#f3eee1"
+    ],
+    "dark": [
+      "#162923",
+      "#2a1e18",
+      "#241d2b",
+      "#282315"
+    ]
+  },
+  "status_tint": {
+    "light": {
+      "good": "#e4f1e6",
+      "warning": "#f4eddb",
+      "serious": "#f7e9e1",
+      "critical": "#f7e4e4"
+    },
+    "dark": {
+      "good": "#152a19",
+      "warning": "#2b2510",
+      "serious": "#2e1f16",
+      "critical": "#2e1818"
+    }
+  },
+  "status_ink": {
+    "light": {
+      "good": "#175c26",
+      "warning": "#6b5200",
+      "serious": "#7d3914",
+      "critical": "#801919"
+    },
+    "dark": {
+      "good": "#5cb96b",
+      "warning": "#c9a63c",
+      "serious": "#d1815a",
+      "critical": "#d96a6a"
+    }
   }
 }

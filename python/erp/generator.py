@@ -125,14 +125,14 @@ def create_company(
     step("Création de l'entreprise…", 0.06)
     db.execute(
         """INSERT INTO company (id, name, store_type, store_label, currency, currency_sym,
-                                tax_rate, city, country, opened_on, logo_emoji)
+                                tax_rate, city, country, opened_on, logo_mark)
            VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         (name.strip(), store_type, spec["label"], cur["code"], cur["symbol"],
          spec["tax_rate"], city, country, start.isoformat(), spec["icon"]),
     )
     db.executemany(
         "INSERT INTO departments (code, name, icon, position) VALUES (?, ?, ?, ?)",
-        [(d["code"], d["name"], d["icon"], d["position"]) for d in DEPARTMENTS],
+        [(d["code"], d["name"], "", d["position"]) for d in DEPARTMENTS],
     )
     db.set_meta("onboarded_at", datetime.now().isoformat(timespec="seconds"))
     db.set_meta("history_months", history_months)

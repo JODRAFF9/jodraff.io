@@ -5,13 +5,13 @@
   'use strict';
 
   var DEPARTMENTS = [
-    { code: 'OVERVIEW', route: 'overview',   icon: '📊', name: "Vue d'ensemble" },
-    { code: 'SALES',    route: 'sales',      icon: '🧾', name: 'Ventes' },
-    { code: 'STOCK',    route: 'stock',      icon: '📦', name: 'Stock' },
-    { code: 'PURCH',    route: 'purchasing', icon: '🚚', name: 'Achats' },
-    { code: 'CRM',      route: 'customers',  icon: '👥', name: 'Clients' },
-    { code: 'HR',       route: 'hr',         icon: '🧑‍💼', name: 'Ressources humaines' },
-    { code: 'FIN',      route: 'finance',    icon: '💰', name: 'Finance' }
+    { code: 'OVERVIEW', route: 'overview', name: "Vue d'ensemble" },
+    { code: 'SALES', route: 'sales', name: 'Ventes' },
+    { code: 'STOCK', route: 'stock', name: 'Stock' },
+    { code: 'PURCH', route: 'purchasing', name: 'Achats' },
+    { code: 'CRM', route: 'customers', name: 'Clients' },
+    { code: 'HR', route: 'hr', name: 'Ressources humaines' },
+    { code: 'FIN', route: 'finance', name: 'Finance' }
   ];
 
   var state = { company: null, route: 'overview', days: 30, storeType: null, types: [] };
@@ -48,7 +48,7 @@
     $('onboard-echo').textContent = '';
     var notice = $('onboard-notice');
     notice.className = 'notice notice-warn';
-    notice.innerHTML = '<span>⚠️</span><div><b>API injoignable.</b> ' +
+    notice.innerHTML = '<div><b>API injoignable.</b> ' +
       Fmt.esc(message) + '</div>';
     var retry = document.getElementById('btn-retry');
     if (retry) retry.addEventListener('click', showOnboarding);
@@ -63,7 +63,7 @@
       $('type-grid').innerHTML = data.types.map(function (t) {
         return '<button type="button" class="type-card" role="radio" aria-checked="false" ' +
           'data-key="' + Fmt.esc(t.key) + '">' +
-          '<div class="type-icon">' + t.icon + '</div>' +
+          '<div class="type-icon">' + Fmt.esc(t.icon) + '</div>' +
           '<div class="type-name">' + Fmt.esc(t.label) + '</div>' +
           '<div class="type-tag">' + Fmt.esc(t.tagline) + '</div>' +
           '<div class="type-meta"><span>' + t.n_categories + ' rayons</span>' +
@@ -140,14 +140,14 @@
   /* -------------------------------------------------------- coquille */
   function mountShell() {
     var company = state.company;
-    $('brand-logo').textContent = company.logo_emoji;
+    $('brand-logo').textContent = company.logo_mark;
     $('brand-name').textContent = company.name;
     $('brand-type').textContent = company.store_label;
     $('brand-meta').textContent = company.currency + ' · TVA ' +
       Math.round(company.tax_rate * 100) + ' %';
     $('nav').innerHTML = DEPARTMENTS.map(function (d) {
       return '<button type="button" class="nav-link" data-route="' + d.route + '">' +
-        '<span class="nav-icon">' + d.icon + '</span>' + Fmt.esc(d.name) + '</button>';
+        Fmt.esc(d.name) + '</button>';
     }).join('');
   }
 
@@ -205,7 +205,7 @@
       if (rendered.draw) rendered.draw();
       window.scrollTo({ top: 0, behavior: 'instant' });
     }).catch(function (error) {
-      view.innerHTML = '<div class="notice notice-warn"><span>⚠️</span><div>' +
+      view.innerHTML = '<div class="notice notice-warn"><div>' +
         Fmt.esc(error.message) + '</div></div>';
     });
   }

@@ -18,7 +18,7 @@ onboarding_ui <- function(id) {
     class = "onboard-page",
     div(
       class = "onboard",
-      div(style = "font-size:34px", "\U0001F3EA"),
+      div(class = "onboard-mark", "ERP Boutique"),
       h1("Créez le tableau de bord de votre boutique"),
       tags$p(
         class = "lead",
@@ -112,7 +112,6 @@ onboarding_server <- function(id, con, on_created) {
 
     output$notice <- renderUI({
       div(class = "notice notice-info",
-          span("ℹ️"),
           div(tags$b("Les six départements sont livrés d'office. "),
               "Ils partagent une seule base de données : une vente décharge le stock, ",
               "met à jour la fiche client et le compte de résultat au même instant."))

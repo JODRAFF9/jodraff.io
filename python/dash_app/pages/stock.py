@@ -31,7 +31,7 @@ def layout(db, days: int = 30) -> html.Div:
         (f"-{days} day",))
 
     return html.Div([
-        page_header("📦  Stock",
+        page_header("Stock",
                     "Le stock n'est jamais saisi à la main : il résulte des ventes, "
                     "des réceptions fournisseurs et des écritures d'inventaire."),
 
@@ -42,11 +42,11 @@ def layout(db, days: int = 30) -> html.Div:
                      [f"marge potentielle {compact_money(retail_value - total_value, sym)}"],
                      DEPT_COLOR["FIN"]),
             kpi_tile("Ruptures", str(len(out)),
-                     [html.Span("⛔ vente impossible",
+                     [html.Span("vente impossible",
                                 style={"color": STATUS["critical"], "fontWeight": "600"})],
                      STATUS["critical"]),
             kpi_tile("À commander", str(len(alerts)),
-                     [html.Span("▲ sous le point de commande")], STATUS["serious"]),
+                     [html.Span("sous le point de commande")], STATUS["serious"]),
             kpi_tile("Pertes valorisées", compact_money(losses, sym),
                      [f"casse et péremption sur {days} j"], DEPT_COLOR["PURCH"]),
         ], className="grid grid-kpi", style={"marginBottom": "16px"}),
@@ -96,12 +96,12 @@ def layout(db, days: int = 30) -> html.Div:
                  className="span-2"),
             card("Ce que dit la couleur",
                  html.Div([
-                     _legend_row(STATUS["critical"], "⛔", "Rupture", "stock à zéro ou négatif"),
-                     _legend_row(STATUS["serious"], "▲", "À commander", "sous le point de commande"),
-                     _legend_row(STATUS["warning"], "•", "Stock faible", "moins de deux fois le seuil"),
-                     _legend_row(STATUS["good"], "✓", "Disponible", "niveau confortable"),
+                     _legend_row(STATUS["critical"], "Rupture", "stock à zéro ou négatif"),
+                     _legend_row(STATUS["serious"], "À commander", "sous le point de commande"),
+                     _legend_row(STATUS["warning"], "Stock faible", "moins de deux fois le seuil"),
+                     _legend_row(STATUS["good"], "Disponible", "niveau confortable"),
                  ]),
-                 note="Une icône et un libellé accompagnent toujours la couleur."),
+                 note="Un libellé explicite accompagne toujours la couleur."),
         ], className="grid grid-3", style={"marginTop": "14px"}),
 
         html.Div([
@@ -163,10 +163,10 @@ def layout(db, days: int = 30) -> html.Div:
     ])
 
 
-def _legend_row(color: str, icon: str, label: str, detail: str) -> html.Div:
+def _legend_row(color: str, label: str, detail: str) -> html.Div:
     return html.Div([
         html.Span(className="badge-dot", style={"background": color, "flex": "0 0 7px"}),
-        html.B(f"{icon} {label}", style={"fontSize": "12.5px"}),
+        html.B(label, style={"fontSize": "13px"}),
         html.Span(detail, style={"fontSize": "12px", "color": "#898781"}),
     ], style={"display": "flex", "alignItems": "center", "gap": "8px", "padding": "8px 0",
               "borderBottom": "1px solid #e1e0d9"})

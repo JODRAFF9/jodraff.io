@@ -62,7 +62,7 @@ generate_company <- function(con, name, store_type,
   step("Création de l'entreprise…", 0.07)
   DBI::dbExecute(con,
     "INSERT INTO company (id, name, store_type, store_label, currency, currency_sym,
-                          tax_rate, city, country, opened_on, logo_emoji)
+                          tax_rate, city, country, opened_on, logo_mark)
      VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     params = list(trimws(name), store_type, spec$label, cur$code, cur$symbol,
                   spec$tax_rate, city, country, format(start), spec$icon))
@@ -70,7 +70,7 @@ generate_company <- function(con, name, store_type,
   DBI::dbAppendTable(con, "departments", data.frame(
     code     = vapply(DEPARTMENTS, `[[`, "", "code"),
     name     = vapply(DEPARTMENTS, `[[`, "", "name"),
-    icon     = vapply(DEPARTMENTS, `[[`, "", "icon"),
+    icon     = "",
     position = seq_along(DEPARTMENTS) - 1L
   ))
 
