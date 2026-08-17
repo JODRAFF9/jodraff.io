@@ -28,7 +28,7 @@ def layout(db, days: int = 30) -> html.Div:
 
     return html.Div([
         page_header(
-            f"{company['logo_emoji']}  {company['name']}",
+            company["name"],
             f"{company['store_label']}, {company['city']}, {company['country']}. "
             f"Toutes les cartes ci-dessous sont calculées en direct sur la base SQL centrale.",
         ),
@@ -46,8 +46,8 @@ def layout(db, days: int = 30) -> html.Div:
             kpi_tile("Panier moyen", compact_money(k["avg_basket"], sym),
                      [delta_badge(k["avg_basket_delta"]), "par ticket"], DEPT_COLOR["SALES"]),
             kpi_tile("Valeur du stock", compact_money(k["stock_value"], sym),
-                     [html.Span(f"⛔ {k['out_of_stock']} rupture(s)"),
-                      html.Span(f"· ▲ {k['stock_alerts']} à commander")], DEPT_COLOR["STOCK"]),
+                     [html.Span(f"{k['out_of_stock']} rupture(s)"),
+                      html.Span(f"{k['stock_alerts']} à commander")], DEPT_COLOR["STOCK"]),
             kpi_tile("Résultat du mois", compact_money(k["net_result"], sym),
                      [f"masse salariale {compact_money(k['payroll'], sym)}"], DEPT_COLOR["HR"]),
         ], className="grid grid-kpi", style={"marginBottom": "16px"}),

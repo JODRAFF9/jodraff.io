@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   imports: [...UI_COMPONENTS, ...CHART_COMPONENTS, DataTableComponent],
   template: `
     @if (data(); as d) {
-      <erp-page-head title="🚚  Achats"
+      <erp-page-head title="Achats"
         subtitle="Le plan de commande n'est pas saisi : il est déduit des niveaux de stock
                   et des ventes, puis groupé par fournisseur." />
 

@@ -10,11 +10,17 @@
   'use strict';
 
   var NS = 'http://www.w3.org/2000/svg';
-  var SERIES = ['--s1', '--s2', '--s3', '--s4', '--s5', '--s6', '--s7', '--s8'];
+  var SERIES = ['--s1', '--s2', '--s3', '--s4'];
+  var SERIES_TINT = ['--s1-tint', '--s2-tint', '--s3-tint', '--s4-tint'];
 
   /** Couleur de série : ordre FIXE, jamais recyclé entre deux rendus. */
   function color(index) {
     return 'var(' + SERIES[index % SERIES.length] + ')';
+  }
+
+  /** Aplat sous une courbe : teinte pleine, jamais une opacite. */
+  function tint(index) {
+    return 'var(' + SERIES_TINT[index % SERIES_TINT.length] + ')';
   }
 
   function el(tag, attrs, parent) {
@@ -97,7 +103,7 @@
   }
 
   function emptyState(host, message) {
-    host.innerHTML = '<div class="empty"><span class="mark">∅</span>' + Fmt.esc(message) + '</div>';
+    host.innerHTML = '<div class="empty">' + Fmt.esc(message) + '</div>';
   }
 
   /* ======================================================== courbes ==== */
@@ -125,7 +131,7 @@
         el('path', {
           d: d + ' L' + pointX(values.length - 1).toFixed(1) + ' ' + (box.y + box.h) +
              ' L' + box.x + ' ' + (box.y + box.h) + ' Z',
-          fill: color(s), 'fill-opacity': .10, stroke: 'none'
+          fill: tint(s), stroke: 'none'
         }, f.svg);
       }
       el('path', {
@@ -305,8 +311,8 @@
       text.textContent = label.length > 22 ? label.slice(0, 21) + '…' : label;
 
       el('rect', {
-        x: labelW, y: y + 5, width: trackW, height: 18, rx: 4,
-        fill: 'var(--grid)', opacity: .5
+        x: labelW, y: y + 5, width: trackW, height: 18, rx: 2,
+        fill: 'var(--grid)'
       }, svg);
       var w = Math.max(3, value / max * trackW);
       var rect = el('rect', {

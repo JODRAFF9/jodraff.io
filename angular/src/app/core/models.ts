@@ -14,7 +14,7 @@ export interface Company {
   city: string;
   country: string;
   opened_on: string;
-  logo_emoji: string;
+  logo_mark: string;
 }
 
 export interface StoreType {
@@ -40,7 +40,7 @@ export interface Currency {
 export interface StoreTypesResponse {
   types: StoreType[];
   currencies: Currency[];
-  departments: { code: string; name: string; icon: string; description: string }[];
+  departments: { code: string; name: string; description: string }[];
 }
 
 export interface CompanyCreate {
@@ -354,6 +354,5 @@ export interface FinanceResponse {
 export interface DepartmentNav {
   code: string;
   route: string;
-  icon: string;
   name: string;
 }

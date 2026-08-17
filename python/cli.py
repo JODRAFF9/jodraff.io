@@ -88,7 +88,7 @@ def cmd_stats(_args: argparse.Namespace) -> int:
         return 1
     sym = company["currency_sym"]
     k = q.kpis(30)
-    print(f"\n  {company['logo_emoji']}  {company['name']}, {company['store_label']}")
+    print(f"\n  {company['logo_mark']}  {company['name']}, {company['store_label']}")
     print("  " + "─" * 60)
     print(f"  CA (30 j)          {compact_money(k['revenue'], sym)}"
           f"   ({k['tickets']} tickets)")

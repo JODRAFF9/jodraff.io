@@ -317,7 +317,17 @@ mécanique là où Dash, plotly et Angular la masquent.
 Le système visuel est partagé (`shared/theme.json`) et sa palette catégorielle a
 été validée : bande de clarté, plancher de chroma, séparation daltonisme
 (ΔE ≥ 8 sur les paires adjacentes), plancher vision normale (ΔE ≥ 15). Les couleurs
-de statut sont réservées et toujours accompagnées d'une icône et d'un libellé.
+de statut sont réservées et toujours accompagnées d'un libellé.
+
+**Charte appliquée aux quatre interfaces**, et vérifiée par les tests :
+
+| Règle | Ce que cela donne | Test |
+|---|---|---|
+| Aucune teinte bleue | palette vert / orangé / violet / doré, quatre séries au plus | `aucune teinte bleue` |
+| Aucune transparence | pas de `rgba()`, pas d'`opacity`, pas d'ombre portée ; le relief vient de filets pleins | `aucune transparence dans les styles` |
+| Aucune émoticône | les métiers sont désignés par un monogramme encadré (`QC`, `PH`, `SM`), les états par un libellé | `aucune emoticone dans l interface` |
+| Times New Roman partout | même police dans les pages, les tableaux et les graphiques | `typographie serif partout` |
+| Écritures aérées | interligne 1,7 ; cellules de tableau 11 × 16 px ; gouttière de 18 px | revue visuelle |
 
 ---
 

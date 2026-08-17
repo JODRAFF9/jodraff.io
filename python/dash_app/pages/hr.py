@@ -28,7 +28,7 @@ def layout(db, days: int = 30) -> html.Div:
     sellers = [e for e in staff if e["tickets"] > 0]
 
     return html.Div([
-        page_header("🧑‍💼  Ressources humaines",
+        page_header("Ressources humaines",
                     "L'équipe est reliée aux ventes : le même identifiant salarié sert à la "
                     "paie et au calcul de la performance commerciale."),
 

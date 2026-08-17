@@ -12,7 +12,7 @@
   function overview(data, days) {
     var sym = data.company.currency_sym, k = data.kpis;
     var html =
-      UI.pageHead(Fmt.esc(data.company.logo_emoji) + '&nbsp; ' + Fmt.esc(data.company.name),
+      UI.pageHead(Fmt.esc(data.company.name),
         data.company.store_label + ', ' + data.company.city + ', ' + data.company.country +
         '. Toutes les cartes sont calculées en direct sur la base SQL centrale.') +
 
@@ -28,7 +28,7 @@
         UI.kpi('Panier moyen', money(k.avg_basket, sym),
                UI.delta(k.avg_basket_delta) + ' par ticket', UI.deptColor('SALES')) +
         UI.kpi('Valeur du stock', money(k.stock_value, sym),
-               '⛔ ' + k.out_of_stock + ' rupture(s) · ▲ ' + k.stock_alerts + ' à commander',
+               k.out_of_stock + ' rupture(s), ' + k.stock_alerts + ' à commander',
                UI.deptColor('STOCK')) +
         UI.kpi('Résultat du mois', money(k.net_result, sym),
                'masse salariale ' + money(k.payroll, sym), UI.deptColor('HR')) +
@@ -89,7 +89,7 @@
   function sales(data, days, company) {
     var sym = company.currency_sym, k = data.kpis;
     var html =
-      UI.pageHead('🧾&nbsp; Ventes',
+      UI.pageHead('Ventes',
         'Chaque ticket enregistré décharge le stock, alimente la fiche client et le ' +
         'compte de résultat, sans aucune ressaisie.') +
       '<div class="grid grid-4">' +
@@ -168,7 +168,7 @@
     var out = data.products.filter(function (p) { return p.stock_status === 'rupture'; }).length;
 
     var html =
-      UI.pageHead('📦&nbsp; Stock',
+      UI.pageHead('Stock',
         "Le stock n'est jamais saisi à la main : il résulte des ventes, des réceptions " +
         "fournisseurs et des écritures d'inventaire.") +
       '<div class="grid grid-kpi">' +
@@ -176,8 +176,8 @@
                'au prix de revient · ' + data.products.length + ' références', UI.deptColor('STOCK')) +
         UI.kpi('Valeur au prix de vente', money(retail, sym),
                'marge potentielle ' + money(retail - totalValue, sym), UI.deptColor('FIN')) +
-        UI.kpi('Ruptures', String(out), '⛔ vente impossible', 'var(--critical)') +
-        UI.kpi('À commander', String(data.alerts.length), '▲ sous le point de commande',
+        UI.kpi('Ruptures', String(out), 'vente impossible', 'var(--critical)') +
+        UI.kpi('À commander', String(data.alerts.length), 'sous le point de commande',
                'var(--serious)') +
       '</div>' +
       '<div class="grid grid-3 mt">' +
@@ -239,7 +239,7 @@
     var planAmount = data.reorder_plan.reduce(function (a, r) { return a + (r.amount || 0); }, 0);
 
     var html =
-      UI.pageHead('🚚&nbsp; Achats',
+      UI.pageHead('Achats',
         "Le plan de commande n'est pas saisi : il est déduit des niveaux de stock et " +
         'des ventes, puis groupé par fournisseur.') +
       '<div class="grid grid-4">' +
@@ -308,7 +308,7 @@
     var points = data.customers.reduce(function (a, c) { return a + (c.loyalty_points || 0); }, 0);
 
     var html =
-      UI.pageHead('👥&nbsp; Clients',
+      UI.pageHead('Clients',
         'La fiche client se remplit toute seule : chaque encaissement met à jour son ' +
         'historique, sa valeur et ses points de fidélité.') +
       '<div class="grid grid-4">' +
@@ -371,7 +371,7 @@
     var sellers = data.employees.filter(function (e) { return e.tickets > 0; });
 
     var html =
-      UI.pageHead('🧑‍💼&nbsp; Ressources humaines',
+      UI.pageHead('Ressources humaines',
         "L'équipe est reliée aux ventes : le même identifiant salarié sert à la paie " +
         'et au calcul de la performance commerciale.') +
       '<div class="grid grid-4">' +
@@ -427,7 +427,7 @@
     var margin = (last.revenue || 0) - (last.cogs || 0);
 
     var html =
-      UI.pageHead('💰&nbsp; Finance',
+      UI.pageHead('Finance',
         "Le compte de résultat n'est pas ressaisi : ventes, coût des marchandises, " +
         'charges et paie remontent automatiquement des autres départements.') +
       '<div class="grid grid-4">' +
@@ -439,7 +439,7 @@
         UI.kpi('Charges + paie', money((last.expenses || 0) + (last.payroll || 0), sym),
                'structure et salaires', UI.deptColor('HR')) +
         UI.kpi('Résultat net', money(last.net_result, sym),
-               (last.net_result >= 0 ? '✓ bénéfice' : '⛔ perte'),
+               (last.net_result >= 0 ? 'bénéfice' : 'perte'),
                last.net_result >= 0 ? 'var(--good)' : 'var(--critical)') +
       '</div>' +
       '<div class="grid grid-3 mt">' +

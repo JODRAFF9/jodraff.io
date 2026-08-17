@@ -31,7 +31,7 @@ def layout(db, days: int = 30) -> html.Div:
              if prev.get("net_result") else None)
 
     return html.Div([
-        page_header("💰  Finance",
+        page_header("Finance",
                     "Le compte de résultat n'est pas ressaisi : ventes, coût des marchandises, "
                     "charges et paie remontent automatiquement des autres départements."),
 

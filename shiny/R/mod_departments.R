@@ -40,7 +40,7 @@ overview_server <- function(id, con, period) {
     output$head <- renderUI({
       info <- company()
       page_header(
-        paste(info$logo_emoji, " ", info$name),
+        info$name,
         sprintf("%s, %s, %s. Toutes les cartes sont calculées en direct sur la base SQL centrale.",
                 info$store_label, info$city, info$country))
     })
@@ -63,7 +63,7 @@ overview_server <- function(id, con, period) {
         kpi_tile("Panier moyen", fmt_compact(k$avg_basket, sym),
                  tagList(delta_html(k$avg_basket_delta), "par ticket"), dept_color("SALES")),
         kpi_tile("Valeur du stock", fmt_compact(k$stock_value, sym),
-                 sprintf("⛔ %d rupture(s) · ▲ %d à commander", k$out_of_stock, k$stock_alerts),
+                 sprintf("%d rupture(s), %d à commander", k$out_of_stock, k$stock_alerts),
                  dept_color("STOCK")),
         kpi_tile("Résultat du mois", fmt_compact(k$net_result, sym),
                  paste("masse salariale", fmt_compact(k$payroll, sym)), dept_color("HR")))
@@ -120,7 +120,7 @@ overview_server <- function(id, con, period) {
 sales_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    page_header("\U0001F9FE  Ventes",
+    page_header("Ventes",
       paste("Chaque ticket enregistré décharge le stock, alimente la fiche client",
             "et le compte de résultat, sans aucune ressaisie.")),
     uiOutput(ns("kpis")),
@@ -235,7 +235,7 @@ sales_server <- function(id, con, period) {
 stock_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    page_header("\U0001F4E6  Stock",
+    page_header("Stock",
       paste("Le stock n'est jamais saisi à la main : il résulte des ventes, des",
             "réceptions fournisseurs et des écritures d'inventaire.")),
     uiOutput(ns("kpis")),
@@ -275,9 +275,9 @@ stock_server <- function(id, con, period) {
         kpi_tile("Valeur au prix de vente", fmt_compact(retail, sym),
                  paste("marge potentielle", fmt_compact(retail - total, sym)),
                  dept_color("FIN")),
-        kpi_tile("Ruptures", as.character(out), "⛔ vente impossible", STATUS$critical),
+        kpi_tile("Ruptures", as.character(out), "vente impossible", STATUS$critical),
         kpi_tile("À commander", as.character(nrow(alerts)),
-                 "▲ sous le point de commande", STATUS$serious))
+                 "sous le point de commande", STATUS$serious))
     })
 
     output$valuation <- plotly::renderPlotly({
@@ -326,7 +326,7 @@ stock_server <- function(id, con, period) {
 purchasing_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    page_header("\U0001F69A  Achats",
+    page_header("Achats",
       paste("Le plan de commande n'est pas saisi : il est déduit des niveaux de stock",
             "et des ventes, puis groupé par fournisseur.")),
     uiOutput(ns("kpis")),
@@ -410,7 +410,7 @@ purchasing_server <- function(id, con, period) {
 crm_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    page_header("\U0001F465  Clients",
+    page_header("Clients",
       paste("La fiche client se remplit toute seule : chaque encaissement met à jour",
             "son historique, sa valeur et ses points de fidélité.")),
     uiOutput(ns("kpis")),
@@ -487,7 +487,7 @@ crm_server <- function(id, con, period) {
 hr_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    page_header("\U0001F9D1  Ressources humaines",
+    page_header("Ressources humaines",
       paste("L'équipe est reliée aux ventes : le même identifiant salarié sert à la paie",
             "et au calcul de la performance commerciale.")),
     uiOutput(ns("kpis")),
@@ -566,7 +566,7 @@ hr_server <- function(id, con, period) {
 finance_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    page_header("\U0001F4B0  Finance",
+    page_header("Finance",
       paste("Le compte de résultat n'est pas ressaisi : ventes, coût des marchandises,",
             "charges et paie remontent automatiquement des autres départements.")),
     uiOutput(ns("kpis")),
@@ -605,7 +605,7 @@ finance_server <- function(id, con, period) {
         kpi_tile("Charges + paie", fmt_compact(last$expenses + last$payroll, sym),
                  "structure et salaires", dept_color("HR")),
         kpi_tile("Résultat net", fmt_compact(last$net_result, sym),
-                 if (last$net_result >= 0) "✓ bénéfice" else "⛔ perte",
+                 if (last$net_result >= 0) "bénéfice" else "perte",
                  if (last$net_result >= 0) STATUS$good else STATUS$critical))
     })
 

@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   imports: [...UI_COMPONENTS, ...CHART_COMPONENTS, DataTableComponent],
   template: `
     @if (data(); as d) {
-      <erp-page-head title="👥  Clients"
+      <erp-page-head title="Clients"
         subtitle="La fiche client se remplit toute seule : chaque encaissement met à jour
                   son historique, sa valeur et ses points de fidélité." />
 

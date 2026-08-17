@@ -29,7 +29,7 @@ badge <- function(status) {
   span(class = "badge",
        style = sprintf("background:%s;color:%s", spec$tint, spec$ink),
        span(class = "badge-dot", style = paste0("background:", spec$color)),
-       paste(spec$icon, spec$label))
+       spec$label)
 }
 
 #' En-tête de page.
@@ -107,7 +107,7 @@ col_spec <- function(col, type = "text", digits = 0) {
 #' Flux d'activité inter-départements.
 activity_feed <- function(rows, symbol) {
   if (is.null(rows) || nrow(rows) == 0) {
-    return(div(class = "empty", span(class = "mark", "∅"), "Aucune écriture."))
+    return(div(class = "empty", "Aucune écriture."))
   }
   tags_map <- c(SALES = "VENTE", PURCH = "ACHAT", STOCK = "STOCK", FIN = "CHARGE")
   items <- lapply(seq_len(nrow(rows)), function(i) {

@@ -14,7 +14,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
   template: `
     @if (data(); as d) {
       <erp-page-head
-        [title]="d.company.logo_emoji + '  ' + d.company.name"
+        [title]="d.company.name"
         [subtitle]="d.company.store_label + ', ' + d.company.city + ', ' + d.company.country +
                     '. Toutes les cartes sont calculées en direct sur la base SQL centrale.'" />
 
@@ -34,7 +34,7 @@ import { UI_COMPONENTS } from '../shared/ui.components';
         </erp-kpi>
         <erp-kpi label="Valeur du stock" [value]="fmt(d.kpis.stock_value)"
                  [accent]="color('STOCK')">
-          ⛔ {{ d.kpis.out_of_stock }} rupture(s) · ▲ {{ d.kpis.stock_alerts }} à commander
+          {{ d.kpis.out_of_stock }} rupture(s), {{ d.kpis.stock_alerts }} à commander
         </erp-kpi>
         <erp-kpi label="Résultat du mois" [value]="fmt(d.kpis.net_result)" [accent]="color('HR')">
           masse salariale {{ fmt(d.kpis.payroll) }}

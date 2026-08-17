@@ -48,19 +48,19 @@ LAST_NAMES: list[str] = CATALOG["last_names"]
 # Départements de l'ERP : l'axe autour duquel les données sont centralisées
 # --------------------------------------------------------------------------
 DEPARTMENTS: list[dict[str, Any]] = [
-    {"code": "OVERVIEW", "name": "Vue d'ensemble", "icon": "📊", "position": 0,
+    {"code": "OVERVIEW", "name": "Vue d'ensemble", "position": 0,
      "description": "Consolidation temps réel de tous les départements."},
-    {"code": "SALES", "name": "Ventes", "icon": "🧾", "position": 1,
+    {"code": "SALES", "name": "Ventes", "position": 1,
      "description": "Encaissements, tickets, panier moyen, performance vendeurs."},
-    {"code": "STOCK", "name": "Stock", "icon": "📦", "position": 2,
+    {"code": "STOCK", "name": "Stock", "position": 2,
      "description": "Niveaux, mouvements, valorisation, alertes de rupture."},
-    {"code": "PURCH", "name": "Achats", "icon": "🚚", "position": 3,
+    {"code": "PURCH", "name": "Achats", "position": 3,
      "description": "Fournisseurs, commandes, réapprovisionnement suggéré."},
-    {"code": "CRM", "name": "Clients", "icon": "👥", "position": 4,
+    {"code": "CRM", "name": "Clients", "position": 4,
      "description": "Segments, valeur vie client, fidélité, clients dormants."},
-    {"code": "HR", "name": "Ressources humaines", "icon": "🧑‍💼", "position": 5,
+    {"code": "HR", "name": "Ressources humaines", "position": 5,
      "description": "Effectif, masse salariale, paie, performance commerciale."},
-    {"code": "FIN", "name": "Finance", "icon": "💰", "position": 6,
+    {"code": "FIN", "name": "Finance", "position": 6,
      "description": "Compte de résultat, charges, marge, trésorerie."},
 ]
 

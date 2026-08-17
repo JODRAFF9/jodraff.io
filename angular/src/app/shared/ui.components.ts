@@ -48,7 +48,7 @@ export class CardComponent {
   selector: 'erp-delta',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <span class="delta {{ parts().cls }}">{{ parts().arrow }} {{ parts().text }}</span>
+    <span class="delta {{ parts().cls }}">{{ parts().text }}</span>
   `,
 })
 export class DeltaComponent {
@@ -63,14 +63,14 @@ export class DeltaComponent {
   template: `
     <span class="badge {{ spec().cls }}">
       <span class="badge-dot" [style.background]="'var(--' + spec().cls + ')'"></span>
-      {{ spec().icon }} {{ spec().label }}
+      {{ spec().label }}
     </span>
   `,
 })
 export class BadgeComponent {
   readonly status = input.required<string>();
   protected readonly spec = computed(
-    () => STOCK_STATUS[this.status()] ?? { cls: '', icon: '•', label: this.status() });
+    () => STOCK_STATUS[this.status()] ?? { cls: '', label: this.status() });
 }
 
 /** En-tête de page : titre du département et phrase d'explication. */
@@ -93,7 +93,7 @@ export class PageHeadComponent {
 @Component({
   selector: 'erp-empty',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<div class="empty"><span class="mark">∅</span>{{ message() }}</div>`,
+  template: `<div class="empty">{{ message() }}</div>`,
 })
 export class EmptyComponent {
   readonly message = input<string>('Aucune donnée.');

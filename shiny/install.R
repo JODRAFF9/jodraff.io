@@ -28,7 +28,7 @@ if (length(missing) == 0) {
 # Vérification
 for (package in packages) {
   ok <- requireNamespace(package, quietly = TRUE)
-  message(sprintf("  %-10s %s", package, if (ok) "✓" else "✗ MANQUANT"))
+  message(sprintf("  %-10s %s", package, if (ok) "installe" else "MANQUANT"))
 }
 
 message("\nLancement du dashboard :")

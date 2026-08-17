@@ -19,7 +19,7 @@ import { DEPARTMENTS } from './app.routes';
         <div class="shell">
           <aside class="sidebar">
             <div class="brand">
-              <span class="brand-logo">{{ c.logo_emoji }}</span>
+              <span class="brand-logo">{{ c.logo_mark }}</span>
               <div>
                 <div class="brand-name">{{ c.name }}</div>
                 <div class="brand-type">{{ c.store_label }}</div>
@@ -30,7 +30,7 @@ import { DEPARTMENTS } from './app.routes';
               @for (dept of departments; track dept.code) {
                 <a class="nav-link" [routerLink]="'/' + dept.route"
                    routerLinkActive="active">
-                  <span class="nav-icon">{{ dept.icon }}</span>{{ dept.name }}
+                  {{ dept.name }}
                 </a>
               }
             </nav>

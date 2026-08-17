@@ -13,7 +13,8 @@ from __future__ import annotations
 import plotly.graph_objects as go
 
 from erp.config import compact_money
-from erp.theme import SERIES, STATUS, SURFACE, apply_layout, sequential_scale, series_color
+from erp.theme import (SERIES, STATUS, SURFACE, apply_layout, sequential_scale,
+                       series_color, series_tint)
 
 HOVER = "<b>%{x}</b><br>%{y:,.0f}<extra></extra>"
 
@@ -56,7 +57,7 @@ def line_chart(x: list, series: dict[str, list], symbol: str | None = None,
             x=x, y=values, name=label, mode="lines",
             line=dict(color=color, width=2, shape="spline", smoothing=0.4),
             fill="tozeroy" if (fill and len(series) == 1) else None,
-            fillcolor=_alpha(color, 0.10) if fill else None,
+            fillcolor=series_tint(i) if fill else None,
             hovertemplate=f"{label} : %{{y:,.0f}}<extra></extra>",
         ))
     apply_layout(fig, title, height, showlegend=len(series) > 1)
@@ -103,7 +104,7 @@ def grouped_bars(x: list[str], series: dict[str, list], symbol: str | None = Non
             hovertemplate=f"{label} : %{{y:,.0f}}<extra></extra>",
         ))
     apply_layout(fig, title, height, showlegend=True,
-                 barmode="stack" if stacked else "group", bargap=0.28, bargroupgap=0.08)
+                 barmode="stack" if stacked else "group", bargap=0.28)
     fig.update_xaxes(type="category", automargin=True)
     _fmt_axis(fig, symbol)
     return fig
@@ -184,13 +185,11 @@ def share_bars(labels: list[str], values: list[float], symbol: str,
         hovertemplate="%{y}<br><b>%{x:,.0f}</b><extra></extra>",
     ))
     apply_layout(fig, title, height)
-    fig.update_yaxes(autorange="reversed", showgrid=False, automargin=True)
-    fig.update_xaxes(showticklabels=False, showgrid=False,
-                     range=[0, max(values) * 1.95 if values else 1])
+    # Graduation invisible mais de la meme couleur que le fond : elle sert
+    # uniquement a ecarter le libelle de la barre, qui sinon le touche.
+    fig.update_yaxes(autorange="reversed", showgrid=False, automargin=True,
+                     ticks="outside", ticklen=9, tickcolor=SURFACE["chart"])
+    fig.update_xaxes(showticklabels=False, showgrid=False, ticks="", showline=False,
+                     zeroline=False, range=[0, max(values) * 1.95 if values else 1])
     return fig
 
-
-def _alpha(hex_color: str, alpha: float) -> str:
-    h = hex_color.lstrip("#")
-    r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
-    return f"rgba({r},{g},{b},{alpha})"

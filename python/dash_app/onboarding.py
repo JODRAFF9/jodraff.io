@@ -17,7 +17,7 @@ def layout(message: html.Div | None = None) -> html.Div:
     types = list_store_types()
     return html.Div(
         html.Div([
-            html.Div("🏪", style={"fontSize": "34px"}),
+            html.Div("ERP Boutique", className="onboard-mark"),
             html.H1("Créez le tableau de bord de votre boutique"),
             html.P(
                 "Dites simplement quel commerce vous exploitez et comment il s'appelle. "
@@ -128,10 +128,9 @@ def layout(message: html.Div | None = None) -> html.Div:
 
 def _departments_note() -> html.Div:
     return html.Div([
-        html.Span("ℹ️"),
         html.Div([
             html.B("Les six départements sont livrés d'office "),
-            html.Span(", ".join(f"{d['icon']} {d['name']}" for d in DEPARTMENTS[1:])),
+            html.Span(", ".join(d["name"] for d in DEPARTMENTS[1:])),
             html.Div("Ils partagent une seule base de données : une vente décharge le "
                      "stock, met à jour la fiche client et le compte de résultat "
                      "au même instant.",
@@ -156,7 +155,6 @@ def success_panel(summary: dict, symbol: str) -> html.Div:
     ]
     return html.Div([
         html.Div([
-            html.Span("✅"),
             html.Div([
                 html.B(f"« {summary['company']} » est prête."),
                 html.Div(f"{summary['store_label']}, historique du "

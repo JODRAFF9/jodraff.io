@@ -16,6 +16,26 @@
 #      Rscript tests/test_shiny.R chemin/vers/base_python.db   (parité)
 # =====================================================================
 
+# Sur une machine dont la locale est « C » ou « POSIX », source() tronque
+# silencieusement un fichier au premier caractère accentué. Shiny, lui, lit
+# toujours ses fichiers en UTF-8 explicite. On fait pareil ici, sinon le test
+# testerait un code amputé et non le code réellement exécuté par l'application.
+for (candidat in c("C.UTF-8", "C.utf8", "en_US.UTF-8")) {
+  if (isTRUE(l10n_info()[["UTF-8"]])) break
+  suppressWarnings(Sys.setlocale("LC_CTYPE", candidat))
+}
+
+# Équivalent de shiny:::sourceUTF8 : lecture en UTF-8, analyse en UTF-8, puis
+# évaluation. Indépendant de la locale de la machine.
+source_utf8 <- function(path, envir) {
+  lignes <- readLines(path, warn = FALSE, encoding = "UTF-8")
+  Encoding(lignes) <- "UTF-8"
+  exprs <- parse(text = lignes, srcfile = srcfilecopy(path, lignes, isFile = TRUE),
+                 encoding = "UTF-8")
+  for (expr in exprs) eval(expr, envir = envir)
+  invisible(NULL)
+}
+
 # Localise le dossier de l'application, que le test soit lancé depuis la
 # racine du projet, depuis tests/ ou depuis shiny/.
 SHINY_DIR <- local({
@@ -60,7 +80,7 @@ check("le dossier R/ contient des fichiers", length(files) > 0)
 isolated <- new.env(parent = globalenv())
 load_errors <- character(0)
 for (f in files) {
-  res <- try(source(f, local = isolated, encoding = "UTF-8"), silent = TRUE)
+  res <- try(source_utf8(f, envir = isolated), silent = TRUE)
   if (inherits(res, "try-error")) {
     load_errors <- c(load_errors, sprintf("%s : %s", basename(f),
                                           conditionMessage(attr(res, "condition"))))
@@ -76,7 +96,7 @@ check("DEPARTMENTS expose les 7 entrées de navigation", length(isolated$DEPARTM
 suppressPackageStartupMessages({
   library(DBI); library(RSQLite); library(jsonlite)
 })
-for (f in files) source(f, encoding = "UTF-8")
+for (f in files) source_utf8(f, envir = globalenv())
 
 # =====================================================================
 section("2. Générateur")

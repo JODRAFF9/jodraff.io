@@ -26,7 +26,7 @@ def layout(db, days: int = 30) -> html.Div:
     recent = q.sales_list(120, db=db)
 
     return html.Div([
-        page_header("🧾  Ventes",
+        page_header("Ventes",
                     "Chaque ticket enregistré décharge le stock, alimente la fiche client "
                     "et le compte de résultat, sans aucune ressaisie."),
 

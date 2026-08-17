@@ -59,14 +59,14 @@ def sidebar(pathname: str, company: dict) -> html.Div:
     for path, code in NAV:
         dept = DEPT[code]
         links.append(dcc.Link(
-            [html.Span(dept["icon"], className="nav-icon"), html.Span(dept["name"])],
+            html.Span(dept["name"]),
             href=path,
             className="nav-link active" if path == pathname else "nav-link",
             style={"borderLeftColor": DEPT_COLOR.get(code) if path == pathname else "transparent"},
         ))
     return html.Div([
         html.Div([
-            html.Span(company["logo_emoji"], className="brand-logo"),
+            html.Span(company["logo_mark"], className="brand-logo"),
             html.Div([
                 html.Div(company["name"], className="brand-name"),
                 html.Div(company["store_label"], className="brand-type"),
@@ -195,7 +195,7 @@ def create(n_clicks, store_type, name, city, country, currency, months, traffic)
 
 
 def _warn(message: str) -> html.Div:
-    return html.Div([html.Span("⚠️"), html.Span(message)], className="notice notice-warn")
+    return html.Div(html.Span(message), className="notice notice-warn")
 
 
 @app.callback(
