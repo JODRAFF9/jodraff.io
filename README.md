@@ -280,6 +280,7 @@ shared/            ressources communes à toutes les interfaces
   schema.sql         le modèle SQL : tables, index, 5 triggers, 9 vues
   store_types.json   catalogue des métiers (rayons, produits, rôles, fournisseurs)
   theme.json         jetons de design (palette validée, statuts, surfaces)
+  migrations.json    mise à niveau des bases créées par une version antérieure
 
 python/
   erp/               noyau : config, base, générateur, requêtes, thème

@@ -141,6 +141,31 @@ for (store_type in names(generated)) {
   check(sprintf("%s : aucune vente dans le futur", store_type), futur == 0)
 }
 
+# Une base créée par une version antérieure doit rester utilisable : schema.sql
+# ne contient que des CREATE ... IF NOT EXISTS et laisse intacte une base déjà
+# remplie. C'est ce qui produisait « table company has no column named
+# logo_mark » à la génération, sur une base ouverte avant la charte visuelle.
+local({
+  chemin <- file.path(tmp, "heritee.db")
+  con <- db_connect(chemin)
+  DBI::dbExecute(con, "ALTER TABLE company RENAME COLUMN logo_mark TO logo_emoji")
+  DBI::dbDisconnect(con)
+
+  con <- db_connect(chemin)                  # réouverture par le code actuel
+  colonnes <- db_columns(con, "company")
+  check("une base d'avant la charte est mise à niveau",
+        "logo_mark" %in% colonnes && !("logo_emoji" %in% colonnes))
+
+  ok <- try(generate_company(con, "Boutique héritée", "generique",
+                             history_months = 1, traffic_scale = 0.2), silent = TRUE)
+  check("la base mise à niveau reste utilisable", !inherits(ok, "try-error"))
+  if (inherits(ok, "try-error")) cat("      ", conditionMessage(attr(ok, "condition")), "\n")
+
+  check("rejouer les migrations ne fait rien",
+        length(db_apply_migrations(con)) == 0)
+  DBI::dbDisconnect(con)
+})
+
 # =====================================================================
 section("3. Triggers, la centralisation")
 # =====================================================================

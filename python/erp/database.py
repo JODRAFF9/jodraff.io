@@ -9,13 +9,14 @@ jeu de vues consolidées.
 
 from __future__ import annotations
 
+import json
 import os
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Sequence
 
-from .config import PROJECT_ROOT, SCHEMA_PATH
+from .config import MIGRATIONS_PATH, PROJECT_ROOT, SCHEMA_PATH
 
 DB_PATH = Path(os.environ.get("ERP_DB_PATH", PROJECT_ROOT / "data" / "erp.db"))
 
@@ -35,10 +36,51 @@ def connect(db_path: str | Path | None = None) -> sqlite3.Connection:
     return _configure(sqlite3.connect(str(path), check_same_thread=False))
 
 
+def _columns(conn: sqlite3.Connection, table: str) -> set[str]:
+    """Noms des colonnes d'une table, vide si la table n'existe pas."""
+    return {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+
+
+def apply_migrations(conn: sqlite3.Connection) -> list[str]:
+    """Met à niveau une base déjà remplie, d'après ``shared/migrations.json``.
+
+    ``schema.sql`` ne contient que des ``CREATE ... IF NOT EXISTS`` : il crée
+    une base neuve mais laisse intacte une base existante. Sans cette étape,
+    une base créée par une version antérieure garderait ses anciennes colonnes
+    et les écritures échoueraient (« table company has no column named ... »).
+
+    Chaque opération n'agit que si l'ancien état est réellement présent, ce
+    qui rend la fonction rejouable sans risque.
+    """
+    if not MIGRATIONS_PATH.exists():
+        return []
+
+    plan = json.loads(MIGRATIONS_PATH.read_text(encoding="utf-8"))
+    appliquees: list[str] = []
+
+    for regle in plan.get("colonnes_renommees", []):
+        table, ancien, nouveau = regle["table"], regle["de"], regle["vers"]
+        colonnes = _columns(conn, table)
+        if ancien in colonnes and nouveau not in colonnes:
+            conn.execute(f'ALTER TABLE "{table}" RENAME COLUMN "{ancien}" TO "{nouveau}"')
+            appliquees.append(f"{table}.{ancien} -> {nouveau}")
+
+    for regle in plan.get("colonnes_ajoutees", []):
+        table, colonne = regle["table"], regle["colonne"]
+        if colonne not in _columns(conn, table) and _columns(conn, table):
+            conn.execute(f'ALTER TABLE "{table}" ADD COLUMN "{colonne}" {regle["type"]}')
+            appliquees.append(f"{table}.{colonne} ajoutée")
+
+    if appliquees:
+        conn.commit()
+    return appliquees
+
+
 def init_schema(conn: sqlite3.Connection) -> None:
-    """Applique ``shared/schema.sql`` (idempotent : tout est CREATE IF NOT EXISTS)."""
+    """Applique ``shared/schema.sql`` puis les migrations des bases existantes."""
     conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
     conn.commit()
+    apply_migrations(conn)
 
 
 class Database:

@@ -64,6 +64,7 @@ erp_resource <- function(filename) {
 CATALOG     <- erp_resource("store_types.json")   # métiers, devises, segments
 THEME       <- erp_resource("theme.json")         # jetons de design
 SCHEMA_PATH <- file.path(erp_shared_dir(), "schema.sql")
+MIGRATIONS_PATH <- file.path(erp_shared_dir(), "migrations.json")
 DB_PATH     <- Sys.getenv(
   "ERP_DB_PATH",
   file.path(normalizePath(file.path(erp_app_dir(), ".."), mustWork = FALSE),

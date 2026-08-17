@@ -1,0 +1,20 @@
+{
+  "_objectif": [
+    "shared/schema.sql ne contient que des CREATE ... IF NOT EXISTS : il crée une",
+    "base neuve, mais il ne touche pas à une base déjà remplie. Ce fichier décrit",
+    "les évolutions à appliquer aux bases existantes, en un seul endroit, lu par",
+    "les quatre interfaces (Python, R, API REST, et donc le front web et Angular).",
+    "Chaque entrée est idempotente : elle n'agit que si l'ancien état est présent."
+  ],
+
+  "colonnes_renommees": [
+    {
+      "table": "company",
+      "de": "logo_emoji",
+      "vers": "logo_mark",
+      "motif": "charte visuelle sans émoticône : la colonne porte un monogramme"
+    }
+  ],
+
+  "colonnes_ajoutees": []
+}
